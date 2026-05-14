@@ -1,0 +1,24 @@
+[package]
+name = "obscura-mcp-plugin"
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+repository = "https://github.com/epicsagas/obscura-mcp-plugin"
+description = "MCP server for Obscura headless browser — CLI wrapper for AI agent integration"
+keywords = ["mcp", "web-scraping", "headless-browser", "ai-agent"]
+
+[[bin]]
+name = "obscura-mcp"
+path = "src/main.rs"
+
+[lib]
+name = "obscura_mcp"
+path = "src/lib.rs"
+
+[dependencies]
+tokio = { version = "1", features = ["full"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+clap = { version = "4", features = ["derive"] }
+regex = "1"
+crossterm = "0.28"

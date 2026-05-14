@@ -1,0 +1,24 @@
+{
+  "name": "obscura",
+  "version": "0.1.0",
+  "description": "Headless browser MCP server for AI agents — fetch, scrape, extract markdown, and CDP automation.",
+  "author": {
+    "name": "epicsagas",
+    "url": "https://github.com/epicsagas"
+  },
+  "homepage": "https://github.com/epicsagas/obscura-mcp-plugin",
+  "repository": "https://github.com/epicsagas/obscura-mcp-plugin",
+  "license": "Apache-2.0",
+  "keywords": [
+    "headless-browser",
+    "web-scraping",
+    "mcp",
+    "ai-agent",
+    "automation"
+  ],
+  "skills": "./registry/skills/",
+  "agents": [
+    "./registry/agents/obscura-browser.md"
+  ],
+  "hooks": "./hooks/hooks.json"
+}
