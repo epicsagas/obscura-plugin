@@ -224,7 +224,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "obscura-mcp-plugin"
+name = "obscura-plugin"
 version = "0.1.0"
 dependencies = [
  "clap",

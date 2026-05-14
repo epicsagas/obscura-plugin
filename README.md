@@ -1,4 +1,4 @@
-# obscura-mcp-plugin
+# obscura-plugin
 
 MCP server for [Obscura](https://github.com/h4ckf0r0day/obscura) headless browser — CLI wrapper that gives AI coding agents direct access to web scraping and browser automation.
 
@@ -10,13 +10,13 @@ Unlike the built-in `obscura mcp` subcommand (in-process browser control with `b
 
 ```bash
 curl --proto '=https' --tlsv1.2 -LsSf \
-  https://github.com/epicsagas/obscura-mcp-plugin/releases/latest/download/obscura-mcp-installer.sh | sh
+  https://github.com/epicsagas/obscura-plugin/releases/latest/download/obscura-mcp-installer.sh | sh
 ```
 
 Or via Cargo:
 
 ```bash
-cargo install obscura-mcp-plugin
+cargo install obscura-plugin
 ```
 
 > **Prerequisite**: The `obscura` binary must be installed separately. See [Obscura releases](https://github.com/h4ckf0r0day/obscura/releases).

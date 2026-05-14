@@ -1,9 +1,9 @@
 [package]
-name = "obscura-mcp-plugin"
+name = "obscura-plugin"
 version = "0.1.0"
 edition = "2021"
 license = "Apache-2.0"
-repository = "https://github.com/epicsagas/obscura-mcp-plugin"
+repository = "https://github.com/epicsagas/obscura-plugin"
 description = "MCP server for Obscura headless browser — CLI wrapper for AI agent integration"
 keywords = ["mcp", "web-scraping", "headless-browser", "ai-agent"]
 

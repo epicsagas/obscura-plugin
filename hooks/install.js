@@ -11,7 +11,7 @@ const { join } = require("path");
 const https = require("https");
 const os = require("os");
 
-const REPO = "epicsagas/obscura-mcp-plugin";
+const REPO = "epicsagas/obscura-plugin";
 const OBSCURA_REPO = "h4ckf0r0day/obscura";
 const MCP_BINARY = "obscura-mcp";
 const OBSCURA_BINARY = "obscura";

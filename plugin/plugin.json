@@ -6,8 +6,8 @@
     "name": "epicsagas",
     "url": "https://github.com/epicsagas"
   },
-  "homepage": "https://github.com/epicsagas/obscura-mcp-plugin",
-  "repository": "https://github.com/epicsagas/obscura-mcp-plugin",
+  "homepage": "https://github.com/epicsagas/obscura-plugin",
+  "repository": "https://github.com/epicsagas/obscura-plugin",
   "license": "Apache-2.0",
   "keywords": [
     "headless-browser",
