@@ -112,9 +112,9 @@ fn agent_cursor_keeps_existing_model() {
 }
 
 #[test]
-fn agent_codex_appends_subagent_note() {
+fn agent_codex_passthrough() {
     let result = install::transform_agent(SAMPLE_AGENT, "codex");
-    assert!(result.contains("Codex Sub-agent"));
+    assert_eq!(result, SAMPLE_AGENT);
 }
 
 #[test]

@@ -41,11 +41,8 @@ function getBinaryVersion(cmd) {
 
 function getPluginVersion() {
   try {
-    const manifestPath = join(
-      process.env.CLAUDE_PLUGIN_ROOT || "",
-      ".claude-plugin",
-      "plugin.json"
-    );
+    const root = process.env.CLAUDE_PLUGIN_ROOT || __dirname.replace(/[\\/]hooks$/, "");
+    const manifestPath = join(root, ".claude-plugin", "plugin.json");
     const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
     return manifest.version || null;
   } catch (_) {}

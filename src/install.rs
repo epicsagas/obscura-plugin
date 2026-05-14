@@ -88,7 +88,7 @@ fn tool_config(id: &str) -> Option<ToolConfig> {
         "codex" => Some(ToolConfig {
             name: "Codex CLI",
             skills_dir: Box::new(|s| home().join(format!(".codex/skills/{s}/SKILL.md"))),
-            agents_dir: Box::new(|a| home().join(format!(".codex/skills/{a}/agents/openai.yaml"))),
+            agents_dir: Box::new(|a| home().join(format!(".codex/agents/{a}.md"))),
             mcp_file: home().join(".codex/config.toml"),
             mcp_key: "mcp_servers",
             mcp_format: "toml",
@@ -394,24 +394,7 @@ pub fn transform_agent(content: &str, tool: &str) -> String {
                 .replace("  - Grep", "  - grep_search")
                 .replace("  - Glob", "  - glob")
         }
-        "codex" => {
-            // Extract frontmatter fields for openai.yaml (Codex Agent Skills spec)
-            let name = content
-                .lines()
-                .find(|l| l.starts_with("name:"))
-                .and_then(|l| l.strip_prefix("name:"))
-                .map(|s| s.trim().to_string())
-                .unwrap_or_else(|| "obscura-browser".to_string());
-            let desc = content
-                .lines()
-                .find(|l| l.starts_with("description:"))
-                .and_then(|l| l.strip_prefix("description:"))
-                .map(|s| s.trim().trim_matches('"').to_string())
-                .unwrap_or_else(|| "Obscura browser agent".to_string());
-            format!(
-                "name: {name}\ndisplay_name: \"Obscura Browser\"\ndescription: \"{desc}\"\nversion: \"0.1.0\"\ntags:\n  - web-scraping\n  - headless-browser\n  - ai-agent\n\n## Codex Sub-agent\n\nThis agent can be invoked as a Codex sub-agent.\n"
-            )
-        }
+        "codex" => content.to_string(),
         "opencode" => {
             let re = regex::Regex::new(r"(?m)^(\s*-\s+)(\w+)$").unwrap();
             let result = re.replace_all(content, "  $2: true");
@@ -480,12 +463,6 @@ pub fn install_tool(tool_id: &str, components: Option<&[String]>) {
             let transformed = transform_agent(content, tool_id);
             let dest = (cfg.agents_dir)(name);
             upsert_file(&dest, &transformed);
-            // For tools that nest agents inside skill dirs (e.g. Codex),
-            // also seed the agent SKILL.md alongside the yaml.
-            if tool_id == "codex" {
-                let skill_dest = home().join(format!(".codex/skills/{name}/SKILL.md"));
-                upsert_file(&skill_dest, content);
-            }
         }
     }
 
