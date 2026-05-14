@@ -246,7 +246,7 @@ fn inject_mcp(cfg: &ToolConfig) {
     };
 
     // upsert: skip if identical entry already exists
-    if let Some(servers) = data.get(key).and_then(|v| v.get("obscura")) {
+    if let Some(servers) = data.get(key).and_then(|v| v.get("obscura-mcp")) {
         if servers == &new_entry {
             println!("  skip (unchanged): {}", cfg.mcp_file.display());
             return;
@@ -261,7 +261,7 @@ fn inject_mcp(cfg: &ToolConfig) {
     servers
         .as_object_mut()
         .unwrap()
-        .insert("obscura".into(), new_entry);
+        .insert("obscura-mcp".into(), new_entry);
 
     write_json(&cfg.mcp_file, &data);
     println!("  mcp injected: {}", cfg.mcp_file.display());
@@ -283,7 +283,7 @@ fn remove_mcp(cfg: &ToolConfig) {
     if let Some(obj) = data.as_object_mut() {
         if let Some(servers) = obj.get_mut(key) {
             if let Some(s) = servers.as_object_mut() {
-                s.remove("obscura");
+                s.remove("obscura-mcp");
                 if s.is_empty() {
                     obj.remove(key);
                 }
@@ -327,17 +327,17 @@ fn inject_mcp_toml(path: &PathBuf, exe: &str) {
 
     let obscura = obscura_bin_path();
     let new_entry = format!(
-        "[mcp_servers.obscura]\ncommand = \"{exe}\"\nargs = [\"serve\"]\nenabled = true\n\n[mcp_servers.obscura.env]\nOBSCURA_BIN = \"{obscura}\"\n"
+        "[mcp_servers.obscura-mcp]\ncommand = \"{exe}\"\nargs = [\"serve\"]\nenabled = true\n\n[mcp_servers.obscura-mcp.env]\nOBSCURA_BIN = \"{obscura}\"\n"
     );
 
     // upsert: skip if identical entry already exists
-    if content.contains("mcp_servers.obscura") && content.contains(&format!("command = \"{exe}\""))
+    if content.contains("mcp_servers.obscura-mcp") && content.contains(&format!("command = \"{exe}\""))
     {
         println!("  skip (unchanged): {}", path.display());
         return;
     }
 
-    let mut cleaned = remove_toml_sections(&content, "mcp_servers.obscura");
+    let mut cleaned = remove_toml_sections(&content, "mcp_servers.obscura-mcp");
     if !cleaned.ends_with('\n') && !cleaned.is_empty() {
         cleaned.push('\n');
     }
@@ -354,7 +354,7 @@ fn remove_mcp_toml(path: &PathBuf) {
         Err(_) => return,
     };
 
-    let cleaned = remove_toml_sections(&content, "mcp_servers.obscura");
+    let cleaned = remove_toml_sections(&content, "mcp_servers.obscura-mcp");
     let trimmed = cleaned.trim_end().to_string();
     if trimmed.is_empty() {
         let _ = fs::remove_file(path);
