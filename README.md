@@ -37,7 +37,7 @@ The `SessionStart` hook downloads `obscura-plugin`, `obscura`, and `obscura-work
 ### Codex CLI
 
 ```bash
-codex plugin marketplace add epicsagas/obscura-plugin
+codex plugin marketplace add epicsagas/plugins
 ```
 
 Skills and agents are available immediately — no further steps needed.
