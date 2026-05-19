@@ -34,13 +34,15 @@ claude plugin add /path/to/obscura-plugin   # or local path
 
 The `SessionStart` hook downloads `obscura-mcp`, `obscura`, and `obscura-worker` automatically on first load. No manual steps needed.
 
-### Codex CLI (zero-touch)
+### Codex CLI
 
-`obscura-plugin` also ships a `.codex-plugin/` manifest for Codex:
+1. Register the marketplace source:
 
-```bash
-codex plugin marketplace add epicsagas/obscura-plugin
-```
+   ```bash
+   codex plugin marketplace add https://github.com/epicsagas/obscura-plugin.git
+   ```
+
+2. Open the Codex TUI and install the **Obscura** plugin from the marketplace.
 
 ---
 
