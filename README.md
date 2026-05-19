@@ -36,13 +36,11 @@ The `SessionStart` hook downloads `obscura-mcp`, `obscura`, and `obscura-worker`
 
 ### Codex CLI
 
-1. Register the marketplace source:
+```bash
+codex plugin marketplace add epicsagas/obscura-plugin
+```
 
-   ```bash
-   codex plugin marketplace add https://github.com/epicsagas/obscura-plugin.git
-   ```
-
-2. Open the Codex TUI and install the **Obscura** plugin from the marketplace.
+Skills and agents are available immediately — no further steps needed.
 
 ---
 
