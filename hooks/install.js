@@ -287,6 +287,7 @@ function seed(mcpExe) {
 async function main() {
   const dir = installDir();
   const pluginVersion = getPluginVersion();
+  const isPlugin = !!process.env.CLAUDE_PLUGIN_ROOT;
 
   // ── 1. Ensure obscura + obscura-worker ─────────────────────────────────
   let obscuraExe = resolveExe(OBSCURA_BINARY, dir);
@@ -315,7 +316,8 @@ async function main() {
       patchShellRc(dir);
       if (mcpExe && getBinaryVersion(mcpExe)) {
         log(`${MCP_BINARY} ${getBinaryVersion(mcpExe)} ready`);
-        seed(mcpExe);
+        // Plugin mode: MCP + skills auto-registered from plugin cache, skip manual seeding
+        if (!isPlugin) seed(mcpExe);
       }
     } catch (e) {
       log(`${MCP_BINARY} install failed: ${e.message}`);
@@ -342,8 +344,8 @@ async function main() {
     }
   }
 
-  // ── 4. Seed MCP config + skills ─────────────────────────────────────────
-  seed(mcpExe);
+  // ── 4. Seed MCP config + skills (standalone installs only) ──────────────
+  if (!isPlugin) seed(mcpExe);
 }
 
 main().catch((e) => {
