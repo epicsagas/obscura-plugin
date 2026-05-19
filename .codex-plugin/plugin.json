@@ -16,7 +16,7 @@
     "ai-agent",
     "automation"
   ],
-  "skills": "./.agents/skills/",
+  "skills": "./registry/skills/",
   "mcpServers": "./.mcp.json",
   "hooks": "./hooks/hooks.json",
   "interface": {

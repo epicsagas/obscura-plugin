@@ -38,7 +38,6 @@ The `SessionStart` hook downloads `obscura-plugin`, `obscura`, and `obscura-work
 
 ```bash
 codex plugin marketplace add epicsagas/obscura-plugin
-codex plugin install obscura
 ```
 
 Skills and agents are available immediately — no further steps needed.
