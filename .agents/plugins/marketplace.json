@@ -1,5 +1,5 @@
 {
-  "name": "obscura-plugins",
+  "name": "obscura-plugin",
   "interface": {
     "displayName": "Obscura Browser Plugins"
   },
