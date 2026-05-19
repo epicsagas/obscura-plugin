@@ -28,7 +28,7 @@ MCP server for [Obscura](https://github.com/h4ckf0r0day/obscura) headless browse
 `obscura-plugin` ships a `.claude-plugin/` manifest. Register the marketplace source once, then install:
 
 ```bash
-claude plugin marketplace add epicsagas/obscura-plugin
+claude plugin marketplace add epicsagas/plugins
 claude plugin install obscura
 ```
 
