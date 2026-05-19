@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-05-19
+
+### Fixed
+
+- Replace `is_none_or` (stable since 1.82) with `map_or` to satisfy MSRV 1.80
+
 ## [0.1.0] - 2026-05-19
 
 ### Added

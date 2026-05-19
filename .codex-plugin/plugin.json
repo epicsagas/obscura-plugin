@@ -1,6 +1,6 @@
 {
   "name": "obscura",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Headless browser MCP server for AI agents — fetch, scrape, extract markdown, and CDP automation.",
   "author": {
     "name": "epicsagas",
