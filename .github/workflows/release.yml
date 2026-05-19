@@ -272,42 +272,42 @@ jobs:
           SHA_LINUX_ARM: ${{ steps.sha.outputs.linux_arm }}
           SHA_LINUX_AMD: ${{ steps.sha.outputs.linux_amd }}
         run: |
-          printf 'class ObscuraMcp < Formula\n' > Formula/obscura-mcp.rb
-          printf '  desc "MCP server for Obscura headless browser — CLI wrapper for AI agent integration"\n' >> Formula/obscura-mcp.rb
-          printf '  homepage "https://github.com/epicsagas/obscura-plugin"\n' >> Formula/obscura-mcp.rb
-          printf '  version "%s"\n' "$VER" >> Formula/obscura-mcp.rb
-          printf '  license "Apache-2.0"\n\n' >> Formula/obscura-mcp.rb
-          printf '  on_macos do\n' >> Formula/obscura-mcp.rb
-          printf '    if Hardware::CPU.arm?\n' >> Formula/obscura-mcp.rb
-          printf '      url "https://github.com/epicsagas/obscura-plugin/releases/download/%s/obscura-mcp-aarch64-apple-darwin.tar.xz"\n' "$TAG" >> Formula/obscura-mcp.rb
-          printf '      sha256 "%s"\n' "$SHA_DARWIN_ARM" >> Formula/obscura-mcp.rb
-          printf '    else\n' >> Formula/obscura-mcp.rb
-          printf '      url "https://github.com/epicsagas/obscura-plugin/releases/download/%s/obscura-mcp-x86_64-apple-darwin.tar.xz"\n' "$TAG" >> Formula/obscura-mcp.rb
-          printf '      sha256 "%s"\n' "$SHA_DARWIN_AMD" >> Formula/obscura-mcp.rb
-          printf '    end\n' >> Formula/obscura-mcp.rb
-          printf '  end\n\n' >> Formula/obscura-mcp.rb
-          printf '  on_linux do\n' >> Formula/obscura-mcp.rb
-          printf '    if Hardware::CPU.arm?\n' >> Formula/obscura-mcp.rb
-          printf '      url "https://github.com/epicsagas/obscura-plugin/releases/download/%s/obscura-mcp-aarch64-unknown-linux-gnu.tar.xz"\n' "$TAG" >> Formula/obscura-mcp.rb
-          printf '      sha256 "%s"\n' "$SHA_LINUX_ARM" >> Formula/obscura-mcp.rb
-          printf '    else\n' >> Formula/obscura-mcp.rb
-          printf '      url "https://github.com/epicsagas/obscura-plugin/releases/download/%s/obscura-mcp-x86_64-unknown-linux-gnu.tar.xz"\n' "$TAG" >> Formula/obscura-mcp.rb
-          printf '      sha256 "%s"\n' "$SHA_LINUX_AMD" >> Formula/obscura-mcp.rb
-          printf '    end\n' >> Formula/obscura-mcp.rb
-          printf '  end\n\n' >> Formula/obscura-mcp.rb
-          printf '  def install\n' >> Formula/obscura-mcp.rb
-          printf '    bin.install "obscura-mcp"\n' >> Formula/obscura-mcp.rb
-          printf '  end\n\n' >> Formula/obscura-mcp.rb
-          printf '  test do\n' >> Formula/obscura-mcp.rb
-          printf '    assert_match "obscura-mcp", shell_output("#{bin}/obscura-mcp --version 2>&1")\n' >> Formula/obscura-mcp.rb
-          printf '  end\n' >> Formula/obscura-mcp.rb
-          printf 'end\n' >> Formula/obscura-mcp.rb
+          printf 'class ObscuraPlugin < Formula\n' > Formula/obscura-plugin.rb
+          printf '  desc "MCP server for Obscura headless browser — CLI wrapper for AI agent integration"\n' >> Formula/obscura-plugin.rb
+          printf '  homepage "https://github.com/epicsagas/obscura-plugin"\n' >> Formula/obscura-plugin.rb
+          printf '  version "%s"\n' "$VER" >> Formula/obscura-plugin.rb
+          printf '  license "Apache-2.0"\n\n' >> Formula/obscura-plugin.rb
+          printf '  on_macos do\n' >> Formula/obscura-plugin.rb
+          printf '    if Hardware::CPU.arm?\n' >> Formula/obscura-plugin.rb
+          printf '      url "https://github.com/epicsagas/obscura-plugin/releases/download/%s/obscura-mcp-aarch64-apple-darwin.tar.xz"\n' "$TAG" >> Formula/obscura-plugin.rb
+          printf '      sha256 "%s"\n' "$SHA_DARWIN_ARM" >> Formula/obscura-plugin.rb
+          printf '    else\n' >> Formula/obscura-plugin.rb
+          printf '      url "https://github.com/epicsagas/obscura-plugin/releases/download/%s/obscura-mcp-x86_64-apple-darwin.tar.xz"\n' "$TAG" >> Formula/obscura-plugin.rb
+          printf '      sha256 "%s"\n' "$SHA_DARWIN_AMD" >> Formula/obscura-plugin.rb
+          printf '    end\n' >> Formula/obscura-plugin.rb
+          printf '  end\n\n' >> Formula/obscura-plugin.rb
+          printf '  on_linux do\n' >> Formula/obscura-plugin.rb
+          printf '    if Hardware::CPU.arm?\n' >> Formula/obscura-plugin.rb
+          printf '      url "https://github.com/epicsagas/obscura-plugin/releases/download/%s/obscura-mcp-aarch64-unknown-linux-gnu.tar.xz"\n' "$TAG" >> Formula/obscura-plugin.rb
+          printf '      sha256 "%s"\n' "$SHA_LINUX_ARM" >> Formula/obscura-plugin.rb
+          printf '    else\n' >> Formula/obscura-plugin.rb
+          printf '      url "https://github.com/epicsagas/obscura-plugin/releases/download/%s/obscura-mcp-x86_64-unknown-linux-gnu.tar.xz"\n' "$TAG" >> Formula/obscura-plugin.rb
+          printf '      sha256 "%s"\n' "$SHA_LINUX_AMD" >> Formula/obscura-plugin.rb
+          printf '    end\n' >> Formula/obscura-plugin.rb
+          printf '  end\n\n' >> Formula/obscura-plugin.rb
+          printf '  def install\n' >> Formula/obscura-plugin.rb
+          printf '    bin.install "obscura-mcp"\n' >> Formula/obscura-plugin.rb
+          printf '  end\n\n' >> Formula/obscura-plugin.rb
+          printf '  test do\n' >> Formula/obscura-plugin.rb
+          printf '    assert_match "obscura-mcp", shell_output("#{bin}/obscura-mcp --version 2>&1")\n' >> Formula/obscura-plugin.rb
+          printf '  end\n' >> Formula/obscura-plugin.rb
+          printf 'end\n' >> Formula/obscura-plugin.rb
 
       - name: Commit and push
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add Formula/obscura-mcp.rb
+          git add Formula/obscura-plugin.rb
           git diff --cached --quiet || git commit -m "obscura-mcp ${{ steps.version.outputs.ver }}"
           git push
 

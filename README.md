@@ -39,7 +39,7 @@ irm https://github.com/epicsagas/obscura-plugin/releases/latest/download/obscura
 ### Homebrew (macOS / Linux)
 
 ```bash
-brew install epicsagas/tap/obscura-mcp
+brew install epicsagas/tap/obscura-plugin
 ```
 
 ### Via Rust toolchain
