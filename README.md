@@ -15,11 +15,18 @@
 
 MCP server for [Obscura](https://github.com/h4ckf0r0day/obscura) headless browser — CLI wrapper that gives AI coding agents direct access to web scraping and browser automation.
 
-Unlike the built-in `obscura mcp` subcommand (in-process browser control with `browser_*` tools), this plugin uses a **CLI wrapper** approach: it shells out to the `obscura` binary, providing high-level tools like `obscura_fetch`, `obscura_scrape`, and `obscura_extract_markdown`.
+> **Two MCP approaches in Obscura:**
+> - `obscura mcp` (built-in) — in-process browser control with interactive `browser_*` tools (click, fill, navigate)
+> - `obscura-mcp` (this plugin) — CLI wrapper with high-level read-only tools (`obscura_fetch`, `obscura_scrape`, etc.), designed for autonomous agent pipelines
+>
+> Use the built-in `obscura mcp` when you need to click, fill forms, or maintain browser state. Use this plugin for read-only scraping and batch data collection.
 
 ## Install
 
-> **Prerequisite**: The `obscura` binary must be installed separately. See [Obscura releases](https://github.com/h4ckf0r0day/obscura/releases).
+> **Prerequisites**
+> - `obscura` binary — see [Obscura releases](https://github.com/h4ckf0r0day/obscura/releases)
+> - `obscura-worker` binary — **required for `obscura_scrape` parallel mode**. Included in the same release archive as `obscura`. Keep both binaries in the same directory.
+> - Linux: glibc 2.35+ (Ubuntu 22.04+)
 
 ### macOS / Linux
 
@@ -89,21 +96,78 @@ obscura-mcp list                 # show supported tools and status
 
 | Tool | Description |
 |------|-------------|
-| `obscura_fetch` | Fetch a URL — returns HTML, text, links, or JS eval result |
+| `obscura_fetch` | Fetch a URL — returns HTML, text, links, markdown, or JS eval result |
 | `obscura_scrape` | Parallel scrape multiple URLs with configurable concurrency |
-| `obscura_serve` | Start a CDP server for Puppeteer / Playwright |
-| `obscura_screenshot` | Fetch a page and evaluate a JS expression |
-| `obscura_extract_markdown` | Convert a URL to clean markdown |
+| `obscura_serve` | Start a CDP WebSocket server for Puppeteer / Playwright |
+| `obscura_screenshot` | Fetch a page and evaluate a JS expression (alias for fetch + eval) |
+| `obscura_extract_markdown` | Fetch a URL and return clean plain text (via `document.body.innerText`) |
+
+### Tool parameters
+
+**`obscura_fetch`**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `url` | string | URL to fetch *(required)* |
+| `dump` | string | `html` · `text` · `links` · `markdown` (default: `html`) |
+| `eval` | string | JavaScript expression to evaluate |
+| `wait_until` | string | `load` · `domcontentloaded` · `networkidle0` (default: `load`) |
+| `selector` | string | CSS selector to wait for before returning |
+| `stealth` | boolean | Enable anti-detection + tracker blocking¹ |
+| `user_agent` | string | Custom User-Agent string |
+| `quiet` | boolean | Suppress banner (default: `true`) |
+
+**`obscura_scrape`**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `urls` | string[] | URLs to scrape *(required)* |
+| `eval` | string | JavaScript expression applied to each page |
+| `concurrency` | number | Parallel workers (default: `10`) |
+| `format` | string | `json` · `text` (default: `json`) |
+| `proxy` | string | HTTP/SOCKS5 proxy URL for all workers |
+
+**`obscura_serve`**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `port` | number | WebSocket port (default: `9222`) |
+| `stealth` | boolean | Anti-detection + tracker blocking¹ |
+| `proxy` | string | HTTP/SOCKS5 proxy URL |
+| `workers` | number | Parallel worker processes (default: `1`) |
+
+Returns `wsEndpoint` (`ws://127.0.0.1:{port}/devtools/browser`) for Puppeteer/Playwright connection.
+
+**`obscura_screenshot`** — convenience wrapper around `fetch --eval`
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `url` | string | URL to fetch *(required)* |
+| `expression` | string | JavaScript expression *(required)* |
+| `wait_until` | string | `load` · `domcontentloaded` · `networkidle0` (default: `networkidle0`) |
+| `stealth` | boolean | Anti-detection mode¹ |
+
+**`obscura_extract_markdown`** — fetches page and returns `document.body.innerText`
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `url` | string | URL to fetch *(required)* |
+| `stealth` | boolean | Anti-detection mode¹ |
+| `selector` | string | Scope extraction to a CSS selector |
+
+> ¹ **Stealth mode** requires Obscura built with `--features stealth`. The default release binary includes stealth. If you built from source without the flag, `--stealth` has no effect — rebuild with `cargo build --release --features stealth`.
 
 ## Skills
 
 Registered skills are available as slash commands inside your agent:
 
 ```
-/obscura-fetch <url> [--dump text|html|links] [--eval <js>] [--stealth]
-/obscura-scrape <url1> <url2> ... [--concurrency <N>] [--format json]
+/obscura-fetch <url> [--dump html|text|links|markdown] [--eval <js>] [--selector <css>] [--stealth]
+/obscura-scrape <url1> <url2> ... [--eval <js>] [--concurrency <N>] [--format json|text]
 /obscura-pipeline <index-url>   # discover links → scrape in one pipeline
 ```
+
+> Skills are seeded into `~/.claude/skills/` by `obscura-mcp install claude` and are available as `/obscura-fetch`, `/obscura-scrape`, `/obscura-pipeline` slash commands in Claude Code.
 
 ## The `obscura-browser` agent
 

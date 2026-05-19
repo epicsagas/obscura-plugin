@@ -19,6 +19,7 @@ const OBSCURA_BINARY = "obscura";
 
 // ── Platform detection ───────────────────────────────────────────────────────
 
+// cargo-dist target triple (for obscura-mcp releases)
 function platform() {
   const p = os.platform();
   const a = os.arch();
@@ -28,10 +29,28 @@ function platform() {
   return null;
 }
 
+// obscura upstream uses its own platform naming (aarch64-macos, x86_64-linux, etc.)
+function obscuraPlatform() {
+  const p = os.platform();
+  const a = os.arch();
+  if (p === "darwin") return a === "arm64" ? "aarch64-macos" : "x86_64-macos";
+  if (p === "linux")  return "x86_64-linux"; // no arm64 linux release
+  if (p === "win32")  return "x86_64-windows";
+  return null;
+}
+
+// obscura-mcp: cargo-dist format (.tar.xz, nested dir)
 function assetName(binaryBaseName, plat) {
   return plat === "x86_64-pc-windows-msvc"
     ? `${binaryBaseName}-${plat}.zip`
     : `${binaryBaseName}-${plat}.tar.xz`;
+}
+
+// obscura upstream: legacy format (.tar.gz, flat)
+function obscuraAssetName(binaryBaseName, plat) {
+  return plat === "x86_64-windows"
+    ? `${binaryBaseName}-${plat}.zip`
+    : `${binaryBaseName}-${plat}.tar.gz`;
 }
 
 // ── Install dir + PATH ───────────────────────────────────────────────────────
@@ -130,23 +149,23 @@ function downloadFile(url, dest) {
 
 // ── Extract ──────────────────────────────────────────────────────────────────
 
-async function extractBinary(archive, binaryBaseName, plat, destDir) {
+// mode: "nested" = cargo-dist layout ({name}-{target}/{bin}), "flat" = legacy layout ({bin})
+async function extractBinary(archive, binaryBaseName, plat, destDir, mode = "nested") {
+  const { createReadStream } = require("fs");
+
   if (archive.endsWith(".zip")) {
-    // Windows: flat layout — binary is at root of zip
     const ps = `Expand-Archive -Path '${archive}' -DestinationPath '${destDir}' -Force`;
     const r = spawnSync("powershell", ["-Command", ps], { stdio: "inherit" });
     if (r.status !== 0) throw new Error("Failed to extract zip");
     return join(destDir, `${binaryBaseName}.exe`);
   }
 
-  // tar.xz: cargo-dist nests binary under {name}-{target}/
-  // e.g. obscura-mcp-aarch64-apple-darwin/obscura-mcp
-  const { createReadStream } = require("fs");
-  const target = plat; // e.g. "aarch64-apple-darwin"
-  const innerDir = `${binaryBaseName}-${target}`;
+  const isXz = archive.endsWith(".tar.xz");
+  const tarFlag = isXz ? "-xJ" : "-xz";
+
   await new Promise((resolve, reject) => {
     const tar = require("child_process").spawn(
-      "tar", ["-xJ", "-C", destDir],
+      "tar", [tarFlag, "-C", destDir],
       { stdio: ["pipe", "inherit", "inherit"] }
     );
     createReadStream(archive).pipe(tar.stdin);
@@ -155,7 +174,14 @@ async function extractBinary(archive, binaryBaseName, plat, destDir) {
       else reject(new Error(`tar exited with ${code}`));
     });
   });
-  return join(destDir, innerDir, binaryBaseName);
+
+  if (mode === "nested") {
+    // cargo-dist: obscura-mcp-aarch64-apple-darwin/obscura-mcp
+    return join(destDir, `${binaryBaseName}-${plat}`, binaryBaseName);
+  } else {
+    // legacy flat: obscura (binary at root of archive)
+    return join(destDir, binaryBaseName);
+  }
 }
 
 // ── GitHub release asset URL ─────────────────────────────────────────────────
@@ -182,22 +208,14 @@ async function getLatestAssetUrl(repo, assetFilename) {
 
 // ── Install binary from GitHub release ──────────────────────────────────────
 
-async function installFromRelease(repo, binaryBaseName, binaryName, destDir) {
+// Install obscura-mcp from cargo-dist release (nested .tar.xz)
+async function installMcpFromRelease(destDir) {
   const plat = platform();
-  if (!plat) {
-    log(`Unsupported platform: ${os.platform()}/${os.arch()}`);
-    return null;
-  }
+  if (!plat) { log(`Unsupported platform: ${os.platform()}/${os.arch()}`); return null; }
 
-  const filename = assetName(binaryBaseName, plat);
-  log(`Fetching ${binaryName} release asset: ${filename}`);
-
-  let assetUrl;
-  try {
-    assetUrl = await getLatestAssetUrl(repo, filename);
-  } catch (e) {
-    throw new Error(`Could not find release asset: ${e.message}`);
-  }
+  const filename = assetName("obscura-mcp", plat);
+  log(`Fetching obscura-mcp release asset: ${filename}`);
+  const assetUrl = await getLatestAssetUrl(REPO, filename);
 
   const tmp = join(os.tmpdir(), filename);
   log(`Downloading ${assetUrl}`);
@@ -205,15 +223,56 @@ async function installFromRelease(repo, binaryBaseName, binaryName, destDir) {
 
   ensureInstallDir(destDir);
   const isWindows = plat === "x86_64-pc-windows-msvc";
-  const exeName = isWindows ? `${binaryName}.exe` : binaryName;
+  const exeName = isWindows ? "obscura-mcp.exe" : "obscura-mcp";
   const dest = join(destDir, exeName);
 
-  const extracted = await extractBinary(tmp, binaryName, plat, os.tmpdir());
+  const extracted = await extractBinary(tmp, "obscura-mcp", plat, os.tmpdir(), "nested");
   copyFileSync(extracted, dest);
   if (!isWindows) chmodSync(dest, 0o755);
 
-  log(`Installed ${binaryName} → ${dest}`);
+  log(`Installed obscura-mcp → ${dest}`);
   return dest;
+}
+
+// Install obscura (+ obscura-worker) from upstream legacy release (flat .tar.gz)
+async function installObscuraFromRelease(destDir) {
+  const plat = obscuraPlatform();
+  if (!plat) { log(`Unsupported platform for obscura: ${os.platform()}/${os.arch()}`); return null; }
+
+  const filename = obscuraAssetName("obscura", plat);
+  log(`Fetching obscura release asset: ${filename}`);
+  const assetUrl = await getLatestAssetUrl(OBSCURA_REPO, filename);
+
+  const tmp = join(os.tmpdir(), filename);
+  log(`Downloading ${assetUrl}`);
+  await downloadFile(assetUrl, tmp);
+
+  ensureInstallDir(destDir);
+  const isWindows = plat === "x86_64-windows";
+
+  // Extract into a temp subdir to handle flat layout
+  const extractDir = join(os.tmpdir(), `obscura-extract-${Date.now()}`);
+  mkdirSync(extractDir, { recursive: true });
+  await extractBinary(tmp, "obscura", plat, extractDir, "flat");
+
+  // Copy obscura binary
+  const exeName = isWindows ? "obscura.exe" : "obscura";
+  copyFileSync(join(extractDir, exeName), join(destDir, exeName));
+  if (!isWindows) chmodSync(join(destDir, exeName), 0o755);
+
+  // Copy obscura-worker if present (required for parallel scrape)
+  const workerName = isWindows ? "obscura-worker.exe" : "obscura-worker";
+  const workerSrc = join(extractDir, workerName);
+  if (existsSync(workerSrc)) {
+    copyFileSync(workerSrc, join(destDir, workerName));
+    if (!isWindows) chmodSync(join(destDir, workerName), 0o755);
+    log(`Installed obscura-worker → ${join(destDir, workerName)}`);
+  } else {
+    log(`Warning: obscura-worker not found in archive — parallel scrape may not work`);
+  }
+
+  log(`Installed obscura → ${join(destDir, exeName)}`);
+  return join(destDir, exeName);
 }
 
 // ── Seed (MCP register + skills) ─────────────────────────────────────────────
@@ -229,14 +288,13 @@ async function main() {
   const dir = installDir();
   const pluginVersion = getPluginVersion();
 
-  // ── 1. Ensure obscura ───────────────────────────────────────────────────
+  // ── 1. Ensure obscura + obscura-worker ─────────────────────────────────
   let obscuraExe = resolveExe(OBSCURA_BINARY, dir);
   if (!obscuraExe) {
     log(`${OBSCURA_BINARY} not found — installing...`);
     try {
-      obscuraExe = await installFromRelease(OBSCURA_REPO, "obscura", OBSCURA_BINARY, dir);
+      obscuraExe = await installObscuraFromRelease(dir);
       patchShellRc(dir);
-      // verify
       if (!obscuraExe || !getBinaryVersion(obscuraExe)) {
         log(`${OBSCURA_BINARY} installed but could not verify. Set OBSCURA_BIN=${join(dir, OBSCURA_BINARY)} if needed.`);
       } else {
@@ -253,7 +311,7 @@ async function main() {
   if (!mcpExe) {
     log(`${MCP_BINARY} not found — installing...`);
     try {
-      mcpExe = await installFromRelease(REPO, "obscura-mcp", MCP_BINARY, dir);
+      mcpExe = await installMcpFromRelease(dir);
       patchShellRc(dir);
       if (mcpExe && getBinaryVersion(mcpExe)) {
         log(`${MCP_BINARY} ${getBinaryVersion(mcpExe)} ready`);
@@ -273,7 +331,7 @@ async function main() {
     if (binaryVersion && semverGt(pluginVersion, binaryVersion)) {
       log(`Updating ${MCP_BINARY} ${binaryVersion} → ${pluginVersion}...`);
       try {
-        const updated = await installFromRelease(REPO, "obscura-mcp", MCP_BINARY, dir);
+        const updated = await installMcpFromRelease(dir);
         if (updated) {
           mcpExe = updated;
           log(`Updated to ${getBinaryVersion(mcpExe)}`);
