@@ -17,7 +17,7 @@ MCP server for [Obscura](https://github.com/h4ckf0r0day/obscura) headless browse
 
 > **Two MCP approaches in Obscura:**
 > - `obscura mcp` (built-in) — in-process browser control with interactive `browser_*` tools (click, fill, navigate)
-> - `obscura-mcp` (this plugin) — CLI wrapper with high-level read-only tools (`obscura_fetch`, `obscura_scrape`, etc.), designed for autonomous agent pipelines
+> - `obscura-plugin` (this plugin) — CLI wrapper with high-level read-only tools (`obscura_fetch`, `obscura_scrape`, etc.), designed for autonomous agent pipelines
 >
 > Use the built-in `obscura mcp` when you need to click, fill forms, or maintain browser state. Use this plugin for read-only scraping and batch data collection.
 
@@ -32,7 +32,7 @@ claude plugin add epicsagas/obscura-plugin  # from GitHub (once marketplace-list
 claude plugin add /path/to/obscura-plugin   # or local path
 ```
 
-The `SessionStart` hook downloads `obscura-mcp`, `obscura`, and `obscura-worker` automatically on first load. No manual steps needed.
+The `SessionStart` hook downloads `obscura-plugin`, `obscura`, and `obscura-worker` automatically on first load. No manual steps needed.
 
 ### Codex CLI
 
@@ -54,14 +54,14 @@ Skills and agents are available immediately — no further steps needed.
 ```bash
 # pre-built binary, no Rust required
 curl --proto '=https' --tlsv1.2 -LsSf \
-  https://github.com/epicsagas/obscura-plugin/releases/latest/download/obscura-mcp-installer.sh | sh
+  https://github.com/epicsagas/obscura-plugin/releases/latest/download/obscura-plugin-installer.sh | sh
 ```
 
 ### Windows
 
 ```powershell
 # pre-built binary, no Rust required
-irm https://github.com/epicsagas/obscura-plugin/releases/latest/download/obscura-mcp-installer.ps1 | iex
+irm https://github.com/epicsagas/obscura-plugin/releases/latest/download/obscura-plugin-installer.ps1 | iex
 ```
 
 ### Homebrew (macOS / Linux)
@@ -80,24 +80,24 @@ cargo binstall obscura-plugin
 cargo install obscura-plugin
 ```
 
-> `obscura-mcp --version` to verify. Update with `brew upgrade obscura-plugin` or re-run the installer script.
+> `obscura-plugin --version` to verify. Update with `brew upgrade obscura-plugin` or re-run the installer script.
 
 ### Register with your AI tools
 
-After installing the binary, run `obscura-mcp install` to connect it to your tools:
+After installing the binary, run `obscura-plugin install` to connect it to your tools:
 
 ```bash
-obscura-mcp install              # interactive — pick which tools
-obscura-mcp install cursor       # Cursor
-obscura-mcp install gemini       # Gemini CLI
-obscura-mcp install opencode     # OpenCode
-obscura-mcp install cline        # Cline
-obscura-mcp install all          # all at once
+obscura-plugin install              # interactive — pick which tools
+obscura-plugin install cursor       # Cursor
+obscura-plugin install gemini       # Gemini CLI
+obscura-plugin install opencode     # OpenCode
+obscura-plugin install cline        # Cline
+obscura-plugin install all          # all at once
 ```
 
 ```bash
-obscura-mcp uninstall cursor     # remove from a specific tool
-obscura-mcp list                 # show supported tools and status
+obscura-plugin uninstall cursor     # remove from a specific tool
+obscura-plugin list                 # show supported tools and status
 ```
 
 ### What gets installed
@@ -106,10 +106,10 @@ obscura-mcp list                 # show supported tools and status
 |------|:---:|:------:|:-----:|--------|
 | Claude Code | yes | `~/.claude/skills/` | `~/.claude/agents/` | plugin (auto) |
 | Codex CLI | yes | `~/.codex/skills/` | `~/.codex/agents/` | plugin (auto) |
-| Cursor | yes | `~/.cursor/rules/` | `~/.cursor/agents/` | `obscura-mcp install` |
-| Gemini CLI | yes | `~/.gemini/skills/` | `~/.gemini/agents/` | `obscura-mcp install` |
-| OpenCode | yes | `~/.opencode/skills/` | `~/.config/opencode/agents/` | `obscura-mcp install` |
-| Cline | yes | `~/.cline/skills/` | — | `obscura-mcp install` |
+| Cursor | yes | `~/.cursor/rules/` | `~/.cursor/agents/` | `obscura-plugin install` |
+| Gemini CLI | yes | `~/.gemini/skills/` | `~/.gemini/agents/` | `obscura-plugin install` |
+| OpenCode | yes | `~/.opencode/skills/` | `~/.config/opencode/agents/` | `obscura-plugin install` |
+| Cline | yes | `~/.cline/skills/` | — | `obscura-plugin install` |
 
 ## MCP tools
 
@@ -186,7 +186,7 @@ Registered skills are available as slash commands inside your agent:
 /obscura-pipeline <index-url>   # discover links → scrape in one pipeline
 ```
 
-> Skills are seeded into `~/.claude/skills/` by `obscura-mcp install claude` and are available as `/obscura-fetch`, `/obscura-scrape`, `/obscura-pipeline` slash commands in Claude Code.
+> Skills are seeded into `~/.claude/skills/` by `obscura-plugin install claude` and are available as `/obscura-fetch`, `/obscura-scrape`, `/obscura-pipeline` slash commands in Claude Code.
 
 ## The `obscura-browser` agent
 
@@ -202,14 +202,14 @@ The agent knows Obscura's limits — it stops and escalates to Playwright when l
 
 When loaded, the `SessionStart` hook (`hooks/install.js`) runs automatically and:
 
-1. Downloads `obscura-mcp` from GitHub Releases into `~/.local/bin/`
+1. Downloads `obscura-plugin` from GitHub Releases into `~/.local/bin/`
 2. Downloads `obscura` + `obscura-worker` from the Obscura upstream release
 3. Registers the MCP server, skills, and `obscura-browser` agent
 
 Verify after the first session start:
 
 ```bash
-obscura-mcp list   # shows Claude Code: installed
+obscura-plugin list   # shows Claude Code: installed
 ```
 
 ### What gets seeded
@@ -224,7 +224,7 @@ obscura-mcp list   # shows Claude Code: installed
 
 ```bash
 cargo build --release
-./target/release/obscura-mcp --help
+./target/release/obscura-plugin --help
 ```
 
 ## License

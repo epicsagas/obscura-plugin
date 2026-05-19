@@ -296,10 +296,10 @@ jobs:
           printf '    end\n' >> Formula/obscura-plugin.rb
           printf '  end\n\n' >> Formula/obscura-plugin.rb
           printf '  def install\n' >> Formula/obscura-plugin.rb
-          printf '    bin.install "obscura-mcp"\n' >> Formula/obscura-plugin.rb
+          printf '    bin.install "obscura-plugin"\n' >> Formula/obscura-plugin.rb
           printf '  end\n\n' >> Formula/obscura-plugin.rb
           printf '  test do\n' >> Formula/obscura-plugin.rb
-          printf '    assert_match "obscura-mcp", shell_output("#{bin}/obscura-mcp --version 2>&1")\n' >> Formula/obscura-plugin.rb
+          printf '    assert_match "obscura-plugin", shell_output("#{bin}/obscura-plugin --version 2>&1")\n' >> Formula/obscura-plugin.rb
           printf '  end\n' >> Formula/obscura-plugin.rb
           printf 'end\n' >> Formula/obscura-plugin.rb
 
@@ -308,7 +308,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add Formula/obscura-plugin.rb
-          git diff --cached --quiet || git commit -m "obscura-mcp ${{ steps.version.outputs.ver }}"
+          git diff --cached --quiet || git commit -m "obscura-plugin ${{ steps.version.outputs.ver }}"
           git push
 
   announce:

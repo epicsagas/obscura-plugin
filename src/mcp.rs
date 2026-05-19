@@ -408,7 +408,7 @@ pub fn handle_request(req: &Value) -> Option<String> {
             json!({
                 "protocolVersion": "2024-11-05",
                 "capabilities": { "tools": {} },
-                "serverInfo": { "name": "obscura-mcp", "version": env!("CARGO_PKG_VERSION") }
+                "serverInfo": { "name": "obscura-plugin", "version": env!("CARGO_PKG_VERSION") }
             }),
         )),
         "notifications/initialized" => None,
@@ -431,7 +431,7 @@ pub fn handle_request(req: &Value) -> Option<String> {
 // ── Stdio transport ──────────────────────────────────────────────────────
 
 pub fn run() {
-    eprintln!("obscura-mcp: starting server on stdio");
+    eprintln!("obscura-plugin: starting server on stdio");
 
     let stdin = io::stdin();
     let mut line = String::new();

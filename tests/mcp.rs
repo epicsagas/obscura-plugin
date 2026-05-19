@@ -1,4 +1,4 @@
-use obscura_mcp::mcp;
+use obscura_plugin::mcp;
 use serde_json::{json, Value};
 
 // ── parse_request ──────────────────────────────────────────────────────────
@@ -63,7 +63,7 @@ fn initialize() {
     .unwrap();
     let parsed: Value = serde_json::from_str(&resp).unwrap();
     assert_eq!(parsed["result"]["protocolVersion"], "2024-11-05");
-    assert_eq!(parsed["result"]["serverInfo"]["name"], "obscura-mcp");
+    assert_eq!(parsed["result"]["serverInfo"]["name"], "obscura-plugin");
     assert_eq!(parsed["result"]["capabilities"]["tools"], json!({}));
 }
 
@@ -272,7 +272,7 @@ fn stdio_roundtrip() {
     use std::process::{Command, Stdio};
 
     let bin =
-        std::env::var("OBSCURA_TEST_BIN").unwrap_or_else(|_| "target/release/obscura-mcp".into());
+        std::env::var("OBSCURA_TEST_BIN").unwrap_or_else(|_| "target/release/obscura-plugin".into());
 
     let mut child = Command::new(&bin)
         .arg("serve")
@@ -298,7 +298,7 @@ fn stdio_roundtrip() {
     let resp: Value = serde_json::from_slice(&buf[..n]).unwrap();
 
     assert_eq!(resp["id"], 1);
-    assert_eq!(resp["result"]["serverInfo"]["name"], "obscura-mcp");
+    assert_eq!(resp["result"]["serverInfo"]["name"], "obscura-plugin");
     assert_eq!(resp["result"]["protocolVersion"], "2024-11-05");
 
     // Drop stdin to signal EOF

@@ -1,4 +1,4 @@
-use obscura_mcp::install;
+use obscura_plugin::install;
 
 // ── transform_skill ────────────────────────────────────────────────────────
 

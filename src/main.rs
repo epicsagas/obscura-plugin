@@ -1,10 +1,10 @@
 use clap::{Parser, Subcommand};
 
-use obscura_mcp::{install, mcp, wizard};
+use obscura_plugin::{install, mcp, wizard};
 
 #[derive(Parser)]
 #[command(
-    name = "obscura-mcp",
+    name = "obscura-plugin",
     about = "MCP server for Obscura headless browser"
 )]
 struct Cli {

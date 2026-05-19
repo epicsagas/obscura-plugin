@@ -23,11 +23,11 @@ exclude = [
 ]
 
 [[bin]]
-name = "obscura-mcp"
+name = "obscura-plugin"
 path = "src/main.rs"
 
 [lib]
-name = "obscura_mcp"
+name = "obscura_plugin"
 path = "src/lib.rs"
 
 [package.metadata.binstall]

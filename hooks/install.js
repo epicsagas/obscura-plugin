@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// obscura-mcp plugin bootstrap
+// obscura-plugin plugin bootstrap
 // Runs on SessionStart via hooks.json.
 // Uses only Node.js built-ins — no npm install needed.
 
@@ -14,12 +14,12 @@ const zlib = require("zlib");
 
 const REPO = "epicsagas/obscura-plugin";
 const OBSCURA_REPO = "h4ckf0r0day/obscura";
-const MCP_BINARY = "obscura-mcp";
+const MCP_BINARY = "obscura-plugin";
 const OBSCURA_BINARY = "obscura";
 
 // ── Platform detection ───────────────────────────────────────────────────────
 
-// cargo-dist target triple (for obscura-mcp releases)
+// cargo-dist target triple (for obscura-plugin releases)
 function platform() {
   const p = os.platform();
   const a = os.arch();
@@ -39,7 +39,7 @@ function obscuraPlatform() {
   return null;
 }
 
-// obscura-mcp: cargo-dist format (.tar.xz, nested dir)
+// obscura-plugin: cargo-dist format (.tar.xz, nested dir)
 function assetName(binaryBaseName, plat) {
   return plat === "x86_64-pc-windows-msvc"
     ? `${binaryBaseName}-${plat}.zip`
@@ -176,7 +176,7 @@ async function extractBinary(archive, binaryBaseName, plat, destDir, mode = "nes
   });
 
   if (mode === "nested") {
-    // cargo-dist: obscura-mcp-aarch64-apple-darwin/obscura-mcp
+    // cargo-dist: obscura-plugin-aarch64-apple-darwin/obscura-plugin
     return join(destDir, `${binaryBaseName}-${plat}`, binaryBaseName);
   } else {
     // legacy flat: obscura (binary at root of archive)
@@ -208,13 +208,13 @@ async function getLatestAssetUrl(repo, assetFilename) {
 
 // ── Install binary from GitHub release ──────────────────────────────────────
 
-// Install obscura-mcp from cargo-dist release (nested .tar.xz)
+// Install obscura-plugin from cargo-dist release (nested .tar.xz)
 async function installMcpFromRelease(destDir) {
   const plat = platform();
   if (!plat) { log(`Unsupported platform: ${os.platform()}/${os.arch()}`); return null; }
 
-  const filename = assetName("obscura-mcp", plat);
-  log(`Fetching obscura-mcp release asset: ${filename}`);
+  const filename = assetName("obscura-plugin", plat);
+  log(`Fetching obscura-plugin release asset: ${filename}`);
   const assetUrl = await getLatestAssetUrl(REPO, filename);
 
   const tmp = join(os.tmpdir(), filename);
@@ -223,14 +223,14 @@ async function installMcpFromRelease(destDir) {
 
   ensureInstallDir(destDir);
   const isWindows = plat === "x86_64-pc-windows-msvc";
-  const exeName = isWindows ? "obscura-mcp.exe" : "obscura-mcp";
+  const exeName = isWindows ? "obscura-plugin.exe" : "obscura-plugin";
   const dest = join(destDir, exeName);
 
-  const extracted = await extractBinary(tmp, "obscura-mcp", plat, os.tmpdir(), "nested");
+  const extracted = await extractBinary(tmp, "obscura-plugin", plat, os.tmpdir(), "nested");
   copyFileSync(extracted, dest);
   if (!isWindows) chmodSync(dest, 0o755);
 
-  log(`Installed obscura-mcp → ${dest}`);
+  log(`Installed obscura-plugin → ${dest}`);
   return dest;
 }
 
@@ -279,7 +279,7 @@ async function installObscuraFromRelease(destDir) {
 
 function seed(mcpExe) {
   const r = spawnSync(mcpExe, ["install", "claude"], { stdio: "inherit" });
-  if (r.status !== 0) log(`Warning: 'obscura-mcp install claude' exited ${r.status}`);
+  if (r.status !== 0) log(`Warning: 'obscura-plugin install claude' exited ${r.status}`);
 }
 
 // ── Main ─────────────────────────────────────────────────────────────────────
@@ -306,7 +306,7 @@ async function main() {
     }
   }
 
-  // ── 2. Ensure obscura-mcp ───────────────────────────────────────────────
+  // ── 2. Ensure obscura-plugin ───────────────────────────────────────────────
   let mcpExe = resolveExe(MCP_BINARY, dir);
   if (!mcpExe) {
     log(`${MCP_BINARY} not found — installing...`);
@@ -325,7 +325,7 @@ async function main() {
     return;
   }
 
-  // ── 3. Update obscura-mcp if plugin version is newer ────────────────────
+  // ── 3. Update obscura-plugin if plugin version is newer ────────────────────
   if (pluginVersion) {
     const binaryVersion = getBinaryVersion(mcpExe);
     if (binaryVersion && semverGt(pluginVersion, binaryVersion)) {
