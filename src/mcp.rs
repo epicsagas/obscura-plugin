@@ -441,7 +441,7 @@ pub fn run() {
             .lock()
             .read_line(&mut line)
             .ok()
-            .is_none_or(|n| n == 0)
+            .map_or(true, |n| n == 0)
         {
             break;
         }
