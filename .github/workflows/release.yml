@@ -243,10 +243,10 @@ jobs:
       - name: Compute SHA256
         id: sha
         run: |
-          echo "darwin_arm=$(sha256sum artifacts/obscura-mcp-aarch64-apple-darwin.tar.xz | awk '{print $1}')" >> "$GITHUB_OUTPUT"
-          echo "darwin_amd=$(sha256sum artifacts/obscura-mcp-x86_64-apple-darwin.tar.xz | awk '{print $1}')" >> "$GITHUB_OUTPUT"
-          echo "linux_arm=$(sha256sum artifacts/obscura-mcp-aarch64-unknown-linux-gnu.tar.xz | awk '{print $1}')" >> "$GITHUB_OUTPUT"
-          echo "linux_amd=$(sha256sum artifacts/obscura-mcp-x86_64-unknown-linux-gnu.tar.xz | awk '{print $1}')" >> "$GITHUB_OUTPUT"
+          echo "darwin_arm=$(sha256sum artifacts/obscura-plugin-aarch64-apple-darwin.tar.xz | awk '{print $1}')" >> "$GITHUB_OUTPUT"
+          echo "darwin_amd=$(sha256sum artifacts/obscura-plugin-x86_64-apple-darwin.tar.xz | awk '{print $1}')" >> "$GITHUB_OUTPUT"
+          echo "linux_arm=$(sha256sum artifacts/obscura-plugin-aarch64-unknown-linux-gnu.tar.xz | awk '{print $1}')" >> "$GITHUB_OUTPUT"
+          echo "linux_amd=$(sha256sum artifacts/obscura-plugin-x86_64-unknown-linux-gnu.tar.xz | awk '{print $1}')" >> "$GITHUB_OUTPUT"
 
       - name: Resolve version
         id: version
@@ -279,19 +279,19 @@ jobs:
           printf '  license "Apache-2.0"\n\n' >> Formula/obscura-plugin.rb
           printf '  on_macos do\n' >> Formula/obscura-plugin.rb
           printf '    if Hardware::CPU.arm?\n' >> Formula/obscura-plugin.rb
-          printf '      url "https://github.com/epicsagas/obscura-plugin/releases/download/%s/obscura-mcp-aarch64-apple-darwin.tar.xz"\n' "$TAG" >> Formula/obscura-plugin.rb
+          printf '      url "https://github.com/epicsagas/obscura-plugin/releases/download/%s/obscura-plugin-aarch64-apple-darwin.tar.xz"\n' "$TAG" >> Formula/obscura-plugin.rb
           printf '      sha256 "%s"\n' "$SHA_DARWIN_ARM" >> Formula/obscura-plugin.rb
           printf '    else\n' >> Formula/obscura-plugin.rb
-          printf '      url "https://github.com/epicsagas/obscura-plugin/releases/download/%s/obscura-mcp-x86_64-apple-darwin.tar.xz"\n' "$TAG" >> Formula/obscura-plugin.rb
+          printf '      url "https://github.com/epicsagas/obscura-plugin/releases/download/%s/obscura-plugin-x86_64-apple-darwin.tar.xz"\n' "$TAG" >> Formula/obscura-plugin.rb
           printf '      sha256 "%s"\n' "$SHA_DARWIN_AMD" >> Formula/obscura-plugin.rb
           printf '    end\n' >> Formula/obscura-plugin.rb
           printf '  end\n\n' >> Formula/obscura-plugin.rb
           printf '  on_linux do\n' >> Formula/obscura-plugin.rb
           printf '    if Hardware::CPU.arm?\n' >> Formula/obscura-plugin.rb
-          printf '      url "https://github.com/epicsagas/obscura-plugin/releases/download/%s/obscura-mcp-aarch64-unknown-linux-gnu.tar.xz"\n' "$TAG" >> Formula/obscura-plugin.rb
+          printf '      url "https://github.com/epicsagas/obscura-plugin/releases/download/%s/obscura-plugin-aarch64-unknown-linux-gnu.tar.xz"\n' "$TAG" >> Formula/obscura-plugin.rb
           printf '      sha256 "%s"\n' "$SHA_LINUX_ARM" >> Formula/obscura-plugin.rb
           printf '    else\n' >> Formula/obscura-plugin.rb
-          printf '      url "https://github.com/epicsagas/obscura-plugin/releases/download/%s/obscura-mcp-x86_64-unknown-linux-gnu.tar.xz"\n' "$TAG" >> Formula/obscura-plugin.rb
+          printf '      url "https://github.com/epicsagas/obscura-plugin/releases/download/%s/obscura-plugin-x86_64-unknown-linux-gnu.tar.xz"\n' "$TAG" >> Formula/obscura-plugin.rb
           printf '      sha256 "%s"\n' "$SHA_LINUX_AMD" >> Formula/obscura-plugin.rb
           printf '    end\n' >> Formula/obscura-plugin.rb
           printf '  end\n\n' >> Formula/obscura-plugin.rb
