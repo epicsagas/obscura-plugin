@@ -1,7 +1,7 @@
 {
   "name": "obscura",
   "version": "0.1.1",
-  "description": "Headless browser MCP server for AI agents — fetch, scrape, extract markdown, and CDP automation.",
+  "description": "Rust headless browser as MCP tools. Fetch, scrape, extract markdown — zero config, auto-installs.",
   "author": {
     "name": "epicsagas",
     "url": "https://github.com/epicsagas"

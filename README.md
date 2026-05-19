@@ -39,7 +39,7 @@ The `SessionStart` hook downloads `obscura-mcp`, `obscura`, and `obscura-worker`
 `obscura-plugin` also ships a `.codex-plugin/` manifest for Codex:
 
 ```bash
-codex plugin add epicsagas/obscura-plugin
+codex plugin marketplace add epicsagas/obscura-plugin
 ```
 
 ---

@@ -1,18 +1,17 @@
 {
-  "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "name": "obscura-plugin",
   "owner": {
     "name": "epicsagas",
     "url": "https://github.com/epicsagas"
   },
   "metadata": {
-    "description": "Headless browser MCP server for AI agents — fetch, scrape, extract markdown, and CDP automation."
+    "description": "Rust headless browser as MCP tools. Fetch, scrape, extract markdown — zero config, auto-installs."
   },
   "plugins": [
     {
       "name": "obscura",
       "source": "./",
-      "description": "Headless browser MCP server — fetch, scrape, markdown extraction, CDP automation."
+      "description": "Rust headless browser as MCP tools. Fetch, scrape, extract markdown — zero config, auto-installs."
     }
   ]
 }
