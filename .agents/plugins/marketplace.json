@@ -1,0 +1,20 @@
+{
+  "name": "obscura-plugins",
+  "interface": {
+    "displayName": "Obscura Browser Plugins"
+  },
+  "plugins": [
+    {
+      "name": "obscura",
+      "source": {
+        "source": "local",
+        "path": "./"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

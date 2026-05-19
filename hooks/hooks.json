@@ -7,8 +7,9 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/install.js\"",
-            "async": false
+            "command": "node \"${PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT}}/hooks/install.js\"",
+            "async": false,
+            "statusMessage": "Installing obscura-mcp binary and registering MCP server"
           }
         ],
         "description": "Install obscura-mcp binary if missing, register MCP server and seed skills/agents"

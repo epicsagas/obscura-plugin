@@ -1,0 +1,37 @@
+{
+  "name": "obscura",
+  "version": "0.1.0",
+  "description": "Headless browser MCP server for AI agents — fetch, scrape, extract markdown, and CDP automation.",
+  "author": {
+    "name": "epicsagas",
+    "email": "",
+    "url": "https://github.com/epicsagas"
+  },
+  "homepage": "https://github.com/epicsagas/obscura-plugin",
+  "repository": "https://github.com/epicsagas/obscura-plugin",
+  "license": "Apache-2.0",
+  "keywords": [
+    "headless-browser",
+    "web-scraping",
+    "mcp",
+    "ai-agent",
+    "automation"
+  ],
+  "skills": "./.agents/skills/",
+  "mcpServers": "./.mcp.json",
+  "hooks": "./hooks/hooks.json",
+  "interface": {
+    "displayName": "Obscura Browser",
+    "shortDescription": "Headless browser for AI agents — fetch, scrape, and extract web data.",
+    "longDescription": "Obscura is a Rust-based headless browser CLI that exposes web fetching, parallel scraping, markdown extraction, and CDP automation as MCP tools. Use it for read-only web data collection pipelines.",
+    "developerName": "epicsagas",
+    "category": "Productivity",
+    "capabilities": ["Read"],
+    "websiteURL": "https://github.com/epicsagas/obscura-plugin",
+    "defaultPrompt": [
+      "Use Obscura to fetch and summarize this web page.",
+      "Use Obscura to scrape product data from these URLs.",
+      "Use Obscura to extract all links from this site."
+    ]
+  }
+}

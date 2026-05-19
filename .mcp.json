@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "obscura-mcp": {
+      "command": "obscura-mcp",
+      "args": ["serve"],
+      "env": {}
+    }
+  }
+}

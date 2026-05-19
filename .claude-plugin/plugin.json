@@ -20,5 +20,6 @@
   "agents": [
     "./registry/agents/obscura-browser.md"
   ],
-  "hooks": "./hooks/hooks.json"
+  "hooks": "./hooks/hooks.json",
+  "mcpServers": "./.mcp.json"
 }
