@@ -181,17 +181,17 @@ The agent knows Obscura's limits — it stops and escalates to Playwright when l
 
 ## Claude Code plugin seeding
 
-`obscura-plugin`은 `.claude-plugin/` 매니페스트를 포함하고 있어 `obscura-mcp install`을 수동으로 실행하지 않아도 Claude Code에 자동으로 시딩됩니다.
+`obscura-plugin` ships a `.claude-plugin/` manifest so it can be seeded into Claude Code automatically — no need to run `obscura-mcp install` manually.
 
-Claude Code가 이 플러그인을 로드하면 `hooks/install.js`(`SessionStart` 훅)가 자동 실행되어:
+When Claude Code loads this plugin, the `hooks/install.js` (`SessionStart` hook) runs automatically and:
 
-1. `obscura-mcp` 바이너리를 GitHub Releases에서 `~/.local/bin/`으로 다운로드
-2. `obscura` 헤드리스 브라우저 바이너리를 함께 다운로드
-3. MCP 서버, 스킬, `obscura-browser` 에이전트를 자동 등록
+1. Downloads the `obscura-mcp` binary from GitHub Releases into `~/.local/bin/`
+2. Downloads the `obscura` and `obscura-worker` binaries from the Obscura upstream release
+3. Registers the MCP server, skills, and `obscura-browser` agent
 
-### 로컬 플러그인 로드
+### Load the plugin locally
 
-Claude Code 설정에 플러그인 경로를 추가합니다:
+Add the plugin path to your Claude Code settings:
 
 ```jsonc
 // ~/.claude/settings.json
@@ -202,28 +202,28 @@ Claude Code 설정에 플러그인 경로를 추가합니다:
 }
 ```
 
-또는 CLI로:
+Or via CLI:
 
 ```bash
-claude plugin add /path/to/obscura-plugin   # 로컬 경로
-claude plugin add epicsagas/obscura-plugin  # GitHub (마켓플레이스 등록 후)
+claude plugin add /path/to/obscura-plugin   # local path
+claude plugin add epicsagas/obscura-plugin  # from GitHub (once marketplace-listed)
 ```
 
-첫 세션 시작 후 설치 확인:
+Verify after the first session start:
 
 ```bash
-obscura-mcp list   # Claude Code: installed 표시
+obscura-mcp list   # shows Claude Code: installed
 ```
 
-### 플러그인이 시딩하는 자산
+### What the plugin seeds
 
-| 자산 | 설치 위치 |
-|------|-----------|
-| MCP 서버 | `~/.claude/claude_desktop_config.json` (또는 `.mcp.json`) |
-| 스킬 | `~/.claude/skills/` — `obscura-fetch`, `obscura-scrape`, `obscura-pipeline` |
-| 에이전트 | `~/.claude/agents/obscura-browser.md` |
+| Asset | Destination |
+|-------|-------------|
+| MCP server | `~/.claude/claude_desktop_config.json` (or `.mcp.json`) |
+| Skills | `~/.claude/skills/` — `obscura-fetch`, `obscura-scrape`, `obscura-pipeline` |
+| Agent | `~/.claude/agents/obscura-browser.md` |
 
-> Codex CLI는 Claude Code 플러그인 라이프사이클을 지원하지 않습니다. Codex에는 `obscura-mcp install codex`를 사용하세요.
+> Codex CLI does not support the Claude Code plugin lifecycle. Use `obscura-mcp install codex` for Codex seeding.
 
 ## Build from source
 
