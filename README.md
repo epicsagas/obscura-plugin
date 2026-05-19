@@ -1,5 +1,18 @@
 # obscura-plugin
 
+
+<p align="center">
+  <a href="https://github.com/epicsagas/obscura-plugin/stargazers"><img alt="Stars" src="https://img.shields.io/github/stars/epicsagas/obscura-plugin?style=for-the-badge&labelColor=0d1117&color=ffd700&logo=github&logoColor=white" /></a>
+  <a href="https://github.com/epicsagas/obscura-plugin/network/members"><img alt="Forks" src="https://img.shields.io/github/forks/epicsagas/obscura-plugin?style=for-the-badge&labelColor=0d1117&color=2ecc71&logo=github&logoColor=white" /></a>
+  <a href="https://github.com/epicsagas/obscura-plugin/issues"><img alt="Issues" src="https://img.shields.io/github/issues/epicsagas/obscura-plugin?style=for-the-badge&labelColor=0d1117&color=ff6b6b&logo=github&logoColor=white" /></a>
+  <a href="https://github.com/epicsagas/obscura-plugin/commits/main"><img alt="Last commit" src="https://img.shields.io/github/last-commit/epicsagas/obscura-plugin?style=for-the-badge&labelColor=0d1117&color=58a6ff&logo=git&logoColor=white" /></a>
+</p>
+<p align="center">
+  <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/license-Apache--2.0-3fb950?style=for-the-badge&labelColor=0d1117" /></a>
+  <img alt="Rust" src="https://img.shields.io/badge/rust-d73a49?style=for-the-badge&labelColor=0d1117&logo=rust&logoColor=white" />
+  <a href="https://buymeacoffee.com/epicsaga"><img alt="Buy Me a Coffee" src="https://img.shields.io/badge/buy_me_a_coffee-FFDD00?style=for-the-badge&labelColor=0d1117&logo=buymeacoffee&logoColor=black" /></a>
+</p>
+
 MCP server for [Obscura](https://github.com/h4ckf0r0day/obscura) headless browser — CLI wrapper that gives AI coding agents direct access to web scraping and browser automation.
 
 Unlike the built-in `obscura mcp` subcommand (in-process browser control with `browser_*` tools), this plugin uses a **CLI wrapper** approach: it shells out to the `obscura` binary, providing high-level tools like `obscura_fetch`, `obscura_scrape`, and `obscura_extract_markdown`.
