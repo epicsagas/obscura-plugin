@@ -25,11 +25,11 @@ MCP server for [Obscura](https://github.com/h4ckf0r0day/obscura) headless browse
 
 ### Claude Code (zero-touch)
 
-`obscura-plugin` ships a `.claude-plugin/` manifest. Add it once and every session start auto-installs the binaries and seeds MCP, skills, and the agent:
+`obscura-plugin` ships a `.claude-plugin/` manifest. Register the marketplace source once, then install:
 
 ```bash
-claude plugin add epicsagas/obscura-plugin  # from GitHub (once marketplace-listed)
-claude plugin add /path/to/obscura-plugin   # or local path
+claude plugin marketplace add epicsagas/obscura-plugin
+claude plugin install obscura
 ```
 
 The `SessionStart` hook downloads `obscura-plugin`, `obscura`, and `obscura-worker` automatically on first load. No manual steps needed.
@@ -38,6 +38,7 @@ The `SessionStart` hook downloads `obscura-plugin`, `obscura`, and `obscura-work
 
 ```bash
 codex plugin marketplace add epicsagas/obscura-plugin
+codex plugin install obscura
 ```
 
 Skills and agents are available immediately — no further steps needed.
