@@ -2,10 +2,25 @@
 name = "obscura-plugin"
 version = "0.1.0"
 edition = "2021"
+rust-version = "1.80"
 license = "Apache-2.0"
 repository = "https://github.com/epicsagas/obscura-plugin"
+homepage = "https://github.com/epicsagas/obscura-plugin"
 description = "MCP server for Obscura headless browser — CLI wrapper for AI agent integration"
 keywords = ["mcp", "web-scraping", "headless-browser", "ai-agent"]
+categories = ["command-line-utilities", "development-tools"]
+authors = ["epicsagas"]
+readme = "README.md"
+exclude = [
+    ".github/",
+    ".claude-plugin/",
+    ".codex-plugin/",
+    ".agents/",
+    "hooks/",
+    "registry/",
+    "tests/",
+    "stitch-screens/",
+]
 
 [[bin]]
 name = "obscura-mcp"
@@ -15,6 +30,15 @@ path = "src/main.rs"
 name = "obscura_mcp"
 path = "src/lib.rs"
 
+[package.metadata.binstall]
+pkg-url = "{ repo }/releases/download/v{ version }/{ name }-{ target }.tar.xz"
+pkg-fmt = "txz"
+bin-dir = "{ name }-{ target }/{ bin }"
+
+[package.metadata.binstall.overrides.x86_64-pc-windows-msvc]
+pkg-fmt = "zip"
+bin-dir = "{ bin }.exe"
+
 [dependencies]
 tokio = { version = "1", features = ["full"] }
 serde = { version = "1", features = ["derive"] }
@@ -22,3 +46,13 @@ serde_json = "1"
 clap = { version = "4", features = ["derive"] }
 regex = "1"
 crossterm = "0.28"
+
+[profile.release]
+opt-level = "s"
+lto = true
+strip = true
+codegen-units = 1
+
+[profile.dist]
+inherits = "release"
+lto = "thin"

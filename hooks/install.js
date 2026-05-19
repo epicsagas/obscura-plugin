@@ -22,16 +22,16 @@ const OBSCURA_BINARY = "obscura";
 function platform() {
   const p = os.platform();
   const a = os.arch();
-  if (p === "darwin") return a === "arm64" ? "aarch64-macos" : "x86_64-macos";
-  if (p === "linux")  return "x86_64-linux";
-  if (p === "win32")  return "x86_64-windows";
+  if (p === "darwin") return a === "arm64" ? "aarch64-apple-darwin" : "x86_64-apple-darwin";
+  if (p === "linux")  return a === "arm64" ? "aarch64-unknown-linux-gnu" : "x86_64-unknown-linux-gnu";
+  if (p === "win32")  return "x86_64-pc-windows-msvc";
   return null;
 }
 
 function assetName(binaryBaseName, plat) {
-  return plat === "x86_64-windows"
+  return plat === "x86_64-pc-windows-msvc"
     ? `${binaryBaseName}-${plat}.zip`
-    : `${binaryBaseName}-${plat}.tar.gz`;
+    : `${binaryBaseName}-${plat}.tar.xz`;
 }
 
 // ── Install dir + PATH ───────────────────────────────────────────────────────
@@ -130,28 +130,32 @@ function downloadFile(url, dest) {
 
 // ── Extract ──────────────────────────────────────────────────────────────────
 
-async function extractBinary(archive, binaryName, destDir) {
+async function extractBinary(archive, binaryBaseName, plat, destDir) {
   if (archive.endsWith(".zip")) {
-    // Windows: use PowerShell to expand zip
+    // Windows: flat layout — binary is at root of zip
     const ps = `Expand-Archive -Path '${archive}' -DestinationPath '${destDir}' -Force`;
     const r = spawnSync("powershell", ["-Command", ps], { stdio: "inherit" });
     if (r.status !== 0) throw new Error("Failed to extract zip");
-    return join(destDir, `${binaryName}.exe`);
+    return join(destDir, `${binaryBaseName}.exe`);
   }
 
-  // tar.gz: use Node streams (no external tar needed)
+  // tar.xz: cargo-dist nests binary under {name}-{target}/
+  // e.g. obscura-mcp-aarch64-apple-darwin/obscura-mcp
   const { createReadStream } = require("fs");
-  const extracted = await new Promise((resolve, reject) => {
-    const tar = require("child_process").spawn("tar", ["-xz", "-C", destDir, "--strip-components=0"], {
-      stdio: ["pipe", "inherit", "inherit"],
-    });
+  const target = plat; // e.g. "aarch64-apple-darwin"
+  const innerDir = `${binaryBaseName}-${target}`;
+  await new Promise((resolve, reject) => {
+    const tar = require("child_process").spawn(
+      "tar", ["-xJ", "-C", destDir],
+      { stdio: ["pipe", "inherit", "inherit"] }
+    );
     createReadStream(archive).pipe(tar.stdin);
     tar.on("close", (code) => {
-      if (code === 0) resolve(join(destDir, binaryName));
+      if (code === 0) resolve();
       else reject(new Error(`tar exited with ${code}`));
     });
   });
-  return extracted;
+  return join(destDir, innerDir, binaryBaseName);
 }
 
 // ── GitHub release asset URL ─────────────────────────────────────────────────
@@ -200,12 +204,13 @@ async function installFromRelease(repo, binaryBaseName, binaryName, destDir) {
   await downloadFile(assetUrl, tmp);
 
   ensureInstallDir(destDir);
-  const exeName = plat === "x86_64-windows" ? `${binaryName}.exe` : binaryName;
+  const isWindows = plat === "x86_64-pc-windows-msvc";
+  const exeName = isWindows ? `${binaryName}.exe` : binaryName;
   const dest = join(destDir, exeName);
 
-  const extracted = await extractBinary(tmp, exeName, os.tmpdir());
+  const extracted = await extractBinary(tmp, binaryName, plat, os.tmpdir());
   copyFileSync(extracted, dest);
-  if (plat !== "x86_64-windows") chmodSync(dest, 0o755);
+  if (!isWindows) chmodSync(dest, 0o755);
 
   log(`Installed ${binaryName} → ${dest}`);
   return dest;
