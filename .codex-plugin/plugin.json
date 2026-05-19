@@ -1,6 +1,6 @@
 {
   "name": "obscura",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Rust headless browser as MCP tools. Fetch, scrape, extract markdown — zero config, auto-installs.",
   "author": {
     "name": "epicsagas",
