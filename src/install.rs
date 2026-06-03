@@ -6,11 +6,13 @@ use std::path::PathBuf;
 static SKILL_FETCH: &str = include_str!("../skills/obscura-fetch/SKILL.md");
 static SKILL_SCRAPE: &str = include_str!("../skills/obscura-scrape/SKILL.md");
 static SKILL_PIPELINE: &str = include_str!("../skills/obscura-pipeline/SKILL.md");
+static SKILL_CRAWL: &str = include_str!("../skills/obscura-crawl/SKILL.md");
 
 static CANONICAL_SKILLS: &[(&str, &str)] = &[
     ("obscura-fetch", SKILL_FETCH),
     ("obscura-scrape", SKILL_SCRAPE),
     ("obscura-pipeline", SKILL_PIPELINE),
+    ("obscura-crawl", SKILL_CRAWL),
 ];
 
 // ── Tool registry ────────────────────────────────────────────────────────
@@ -71,7 +73,11 @@ fn obscura_platform() -> Option<&'static str> {
 fn binary_dir() -> PathBuf {
     #[cfg(windows)]
     {
-        home().join("AppData").join("Local").join("Programs").join("obscura")
+        home()
+            .join("AppData")
+            .join("Local")
+            .join("Programs")
+            .join("obscura")
     }
     #[cfg(not(windows))]
     {
@@ -98,7 +104,10 @@ fn is_obscura_on_path() -> bool {
 
 fn query_latest_release(repo: &str) -> Result<serde_json::Value, String> {
     let url = format!("https://api.github.com/repos/{repo}/releases/latest");
-    let json = run_cmd("curl", &["-sL", "-H", "Accept: application/vnd.github+json", &url])?;
+    let json = run_cmd(
+        "curl",
+        &["-sL", "-H", "Accept: application/vnd.github+json", &url],
+    )?;
     serde_json::from_str(&json).map_err(|e| format!("parse: {e}"))
 }
 
@@ -138,7 +147,11 @@ fn patch_shell_rc(dir: &std::path::Path) {
 /// No-op if already on PATH or in `binary_dir()`.
 pub fn ensure_obscura_binary() {
     let dir = binary_dir();
-    let bin_name = if cfg!(windows) { "obscura.exe" } else { "obscura" };
+    let bin_name = if cfg!(windows) {
+        "obscura.exe"
+    } else {
+        "obscura"
+    };
     let dest = dir.join(bin_name);
 
     // Already installed (in install dir or on PATH)?
@@ -149,8 +162,11 @@ pub fn ensure_obscura_binary() {
     let plat = match obscura_platform() {
         Some(p) => p,
         None => {
-            eprintln!("  Unsupported platform for obscura binary ({} {})",
-                std::env::consts::OS, std::env::consts::ARCH);
+            eprintln!(
+                "  Unsupported platform for obscura binary ({} {})",
+                std::env::consts::OS,
+                std::env::consts::ARCH
+            );
             return;
         }
     };
@@ -181,7 +197,10 @@ pub fn ensure_obscura_binary() {
 
     // Download
     let tmp = std::env::temp_dir().join(&asset_name);
-    if let Err(e) = run_cmd("curl", &["-sL", "-o", tmp.to_str().unwrap_or(""), &download_url]) {
+    if let Err(e) = run_cmd(
+        "curl",
+        &["-sL", "-o", tmp.to_str().unwrap_or(""), &download_url],
+    ) {
         eprintln!("  Download failed: {e}");
         return;
     }
@@ -192,13 +211,28 @@ pub fn ensure_obscura_binary() {
     let _ = fs::create_dir_all(&extract_dir);
 
     #[cfg(unix)]
-    let extract_result = run_cmd("tar", &["-xzf", tmp.to_str().unwrap_or(""), "-C", extract_dir.to_str().unwrap_or("")]);
+    let extract_result = run_cmd(
+        "tar",
+        &[
+            "-xzf",
+            tmp.to_str().unwrap_or(""),
+            "-C",
+            extract_dir.to_str().unwrap_or(""),
+        ],
+    );
 
     #[cfg(windows)]
-    let extract_result = run_cmd("powershell", &[
-        "-Command", &format!("Expand-Archive -Path '{}' -DestinationPath '{}' -Force",
-            tmp.display(), extract_dir.display())
-    ]);
+    let extract_result = run_cmd(
+        "powershell",
+        &[
+            "-Command",
+            &format!(
+                "Expand-Archive -Path '{}' -DestinationPath '{}' -Force",
+                tmp.display(),
+                extract_dir.display()
+            ),
+        ],
+    );
 
     if let Err(e) = extract_result {
         eprintln!("  Extraction failed: {e}");
@@ -228,7 +262,11 @@ pub fn ensure_obscura_binary() {
     }
 
     // Copy obscura-worker
-    let worker_name = if cfg!(windows) { "obscura-worker.exe" } else { "obscura-worker" };
+    let worker_name = if cfg!(windows) {
+        "obscura-worker.exe"
+    } else {
+        "obscura-worker"
+    };
     let src_worker = extract_dir.join(worker_name);
     if src_worker.exists() {
         let worker_dest = dir.join(worker_name);

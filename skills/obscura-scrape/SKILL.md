@@ -61,3 +61,34 @@ obscura scrape url1 url2 \
 - All URLs processed with identical options — no per-URL customization
 - No retry logic built in — re-run failed URLs manually
 - No session/cookie — login-required pages not supported
+
+## Retry and adaptive strategies
+
+For failed URLs in a batch scrape:
+1. Collect failed URLs from output (those with error/null results)
+2. Retry failed URLs as a separate scrape call with `--concurrency 2`
+3. If still failing: retry each individually with `obscura fetch --stealth`
+4. If individual fetch also fails: mark URL as unreachable, move on
+
+## Large URL set handling
+
+When scraping more than 50 URLs:
+- Split into batches of 20–30 URLs
+- Run batches sequentially (not in parallel)
+- For rate-limited sites: use `--concurrency 3` per batch
+- Aggregate results across batches
+- Report: total attempted, successful, failed per batch
+
+## Partial failure pattern
+
+```bash
+# Batch 1
+obscura scrape url1 url2 ... url20 --eval "..." --format json
+# Parse output: collect successes, note failures
+
+# Retry batch (failed URLs only)
+obscura scrape failed1 failed2 --eval "..." --concurrency 2 --format json
+
+# Final fallback (still-failing URLs)
+obscura fetch failed1 --quiet --stealth --eval "..."
+```

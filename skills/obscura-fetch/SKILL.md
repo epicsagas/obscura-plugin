@@ -37,6 +37,26 @@ Fetch a URL with Obscura and return the content. Use this for single-page read o
 - No click, form input, or navigation
 - Login-required pages → not supported (suggest Playwright instead)
 
+## Adaptive extraction (for agentic loops)
+
+When a fetch returns unexpected results in an automated workflow:
+
+| Symptom | Try |
+|---------|-----|
+| Empty body | `--stealth` |
+| Bot detection page | `--stealth --wait-until networkidle0` |
+| SPA content missing | `--selector <main-element> --wait-until networkidle0` |
+| Redirect loop | Check final URL in output, fetch that directly |
+| 403 Forbidden | `--stealth` with `--user-agent "Mozilla/5.0..."` |
+
+## URL canonicalization hint
+
+Before adding a URL to a visited set, normalize it:
+- Strip fragment: `https://example.com/page#section` → `https://example.com/page`
+- Strip trailing slash: `https://example.com/page/` → `https://example.com/page`
+- Remove tracking params: `utm_source`, `utm_medium`, `fbclid`, `gclid`
+- Sort query params alphabetically
+
 ## Examples
 
 ```bash

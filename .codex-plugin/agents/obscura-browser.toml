@@ -1,10 +1,10 @@
 [agent]
 name = "obscura-browser"
-description = "Autonomous web data collection agent using Obscura headless browser. Handles discover-then-collect pipelines, structured data extraction, and multi-step scraping. Read-only: no login, no click, no form interaction."
+description = "Autonomous web data collection agent using Obscura headless browser. Handles agentic crawling with depth control, pagination, sitemap discovery, and adaptive extraction. Read-only: no login, no click, no form interaction."
 
 [agent.capabilities]
 read_only = true
-supports = ["fetch", "scrape", "serve"]
+supports = ["fetch", "scrape", "serve", "crawl", "sitemap", "pagination"]
 
 [agent.constraints]
 no_login = true
@@ -17,6 +17,20 @@ no_file_download = true
 [agent.tools]
 allowed = ["Bash", "Read", "Glob", "Grep"]
 
+[agent.crawl]
+default_max_depth = 3
+batch_size = 25
+max_retries_per_url = 3
+adaptive_strategies = ["text", "stealth", "selector", "eval"]
+breadth_first = true
+
+[agent.state_tracking]
+track_visited = true
+track_queue = true
+track_results = true
+track_errors = true
+report_every_n_steps = 5
+
 [agent.escalation]
 login = "Tell user: use Playwright/Browser-use"
 captcha = "Tell user: cannot proceed"
@@ -24,6 +38,11 @@ rate_limit = "Retry with --concurrency 2"
 empty_body = "Retry with --stealth"
 js_heavy_spa = "Add --wait-until networkidle0 or --selector"
 too_many_urls = "Split into batches of 20-30"
+batch_failure_over_50_percent = "Stop, diagnose pattern, adjust strategy"
+depth_exceeds_3 = "Ask user before going deeper"
+over_500_urls = "Warn user, suggest narrowing scope"
+empty_extraction = "Try adaptive: text -> stealth -> selector -> eval"
+pagination_detected = "Follow next pages at same depth, collect all URLs"
 
 [[agent.rules]]
 description = "Always use --quiet"
@@ -44,3 +63,19 @@ command = "Wait for dynamic content"
 [[agent.rules]]
 description = "Raw output > 5000 chars → summarize"
 command = "Don't dump raw output"
+
+[[agent.rules]]
+description = "Check robots.txt and sitemap.xml before crawling"
+command = "Structured discovery before link-following"
+
+[[agent.rules]]
+description = "Report progress every 5 steps for large tasks"
+command = "Keep user informed during long crawls"
+
+[[agent.rules]]
+description = "Validate batch results before continuing"
+command = "Check success rate, adjust strategy on high failure"
+
+[[agent.rules]]
+description = "Canonicalize URLs before adding to visited set"
+command = "Strip fragments, trailing slashes, tracking params"

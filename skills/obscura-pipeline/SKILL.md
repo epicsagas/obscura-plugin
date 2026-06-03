@@ -91,3 +91,31 @@ obscura scrape <product-url-1> <product-url-2> ... \
 | > 50 URLs | Split into batches of 20–30 |
 | Rate limiting / 429 errors | Drop `--concurrency` to 2, add delay between batches |
 | CAPTCHA | Stop — obscura cannot solve CAPTCHAs |
+
+## Pagination handling
+
+For index pages with pagination (e.g., blog page 1, 2, 3...):
+
+1. Fetch first index page
+2. Extract pagination links (look for "Next", ">", `rel="next"`, `/page/N` patterns)
+3. Fetch each subsequent index page to discover more URLs
+4. Collect ALL discovered URLs across all pagination pages
+5. Then run the scrape step on the complete URL set
+
+```bash
+# Detect pagination
+obscura fetch https://example.com/blog --quiet \
+  --eval "JSON.stringify(Array.from(document.querySelectorAll('.pagination a, a[rel=next]')).map(a => ({text: a.textContent.trim(), href: a.href})))"
+```
+
+## Multi-level pipeline
+
+For deeper discovery (e.g., category pages → product listing → product pages):
+
+```
+Level 0: fetch index → extract category URLs
+Level 1: scrape categories → extract item URLs
+Level 2: scrape items → extract data
+```
+
+At each level, apply URL deduplication and same-domain filtering before proceeding.

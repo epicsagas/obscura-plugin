@@ -25,7 +25,7 @@ Skill-driven plugin for [Obscura](https://github.com/h4ckf0r0day/obscura) headle
 
 ```bash
 claude plugin marketplace add epicsagas/plugins
-claude plugin install obscura
+claude plugin install obscura-plugin
 ```
 
 The `SessionStart` hook downloads `obscura` and `obscura-worker` automatically on first load. No manual steps needed.
@@ -34,6 +34,7 @@ The `SessionStart` hook downloads `obscura` and `obscura-worker` automatically o
 
 ```bash
 codex plugin marketplace add epicsagas/plugins
+codex plugin install obscura-plugin
 ```
 
 Skills and agents are available immediately — no further steps needed.
@@ -46,10 +47,7 @@ agy plugin install https://github.com/epicsagas/obscura-plugin
 
 ---
 
-> **Prerequisites** (for manual install only — the hook handles these automatically)
-> - `obscura` binary — see [Obscura releases](https://github.com/h4ckf0r0day/obscura/releases)
-> - `obscura-worker` binary — **required for parallel scrape mode**. Included in the same release archive as `obscura`. Keep both binaries in the same directory.
-> - Linux: glibc 2.35+ (Ubuntu 22.04+)
+> `obscura-plugin install` automatically downloads the `obscura` and `obscura-worker` binaries from [Obscura releases](https://github.com/h4ckf0r0day/obscura/releases). Linux requires glibc 2.35+ (Ubuntu 22.04+).
 
 ### macOS / Linux
 
@@ -120,6 +118,7 @@ Registered skills are available as slash commands inside your agent:
 /obscura-fetch <url> [--dump html|text|links|markdown] [--eval <js>] [--selector <css>] [--stealth]
 /obscura-scrape <url1> <url2> ... [--eval <js>] [--concurrency <N>] [--format json|text]
 /obscura-pipeline <index-url>   # discover links → scrape in one pipeline
+/obscura-crawl <seed-url>       # recursive crawl with depth control, pagination, sitemap discovery
 ```
 
 ### Skill parameters
@@ -158,6 +157,15 @@ Registered skills are available as slash commands inside your agent:
 
 > ¹ **Stealth mode** requires Obscura built with `--features stealth`. The default release binary includes stealth.
 
+**`obscura-crawl`**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `url` | string | Seed URL to start crawling from *(required)* |
+| `max_depth` | number | Maximum crawl depth (default: `3`) |
+| `same_domain` | boolean | Only follow links on the same domain (default: `true`) |
+| `url_filter` | string | Regex/glob pattern to filter URLs by path |
+
 ## The `obscura-browser` agent
 
 A self-directed web data collection specialist. Invoke it for tasks like:
@@ -165,8 +173,9 @@ A self-directed web data collection specialist. Invoke it for tasks like:
 > "Collect all product titles and prices from these 30 URLs"
 > "Fetch the docs at example.com/api and summarize the endpoints"
 > "Scrape the HN front page and return structured JSON"
+> "Crawl example.com/blog up to depth 2 and extract all post titles"
 
-The agent knows Obscura's limits — it stops and escalates to Playwright when login or interaction is required.
+The agent knows Obscura's limits — it stops and escalates to Playwright when login or interaction is required. Supports agentic crawling with depth control, pagination detection, sitemap discovery, and adaptive extraction.
 
 ## Project structure
 
@@ -176,6 +185,7 @@ obscura-plugin/
     obscura-fetch/SKILL.md
     obscura-scrape/SKILL.md
     obscura-pipeline/SKILL.md
+    obscura-crawl/SKILL.md
   agents/                        # shared agent (markdown)
     obscura-browser.md
   scripts/

@@ -124,3 +124,144 @@ obscura serve --port 9222 --stealth
 | Empty body / 403 | Retry with `--stealth` |
 | JS-heavy SPA, content missing | Add `--wait-until networkidle0` or `--selector` |
 | > 50 URLs | Split into batches of 20–30, run sequentially |
+
+---
+
+## Multi-step orchestration protocol
+
+For tasks requiring more than 2 steps, follow this protocol:
+
+### State tracking
+
+Maintain explicit state across all steps:
+
+| State | Purpose |
+|-------|---------|
+| VISITED | Set of canonicalized URLs already fetched (no re-visits) |
+| QUEUE | URLs to process, with depth level |
+| RESULTS | Extracted data accumulated so far |
+| ERRORS | URLs that failed, with reason |
+
+Report state summary between phases:
+> "Queue: 45 URLs remaining. Depth: 2/3. Results: 78 items. Errors: 3 URLs."
+
+### Breadth-first exploration
+
+Always complete one depth level fully before moving to the next:
+1. Process all depth-0 URLs (seed pages)
+2. Collect all discovered links → enqueue at depth 1
+3. Process all depth-1 URLs
+4. Continue until depth limit or queue exhausted
+
+This prevents tunneling down one branch and missing the rest of the site.
+
+### Depth limits
+
+Default max depth: **3**
+- Depth 0: seed page / robots.txt / sitemap.xml
+- Depth 1: pages linked from seed
+- Depth 2: pages linked from depth-1 pages
+- Depth 3+: only if user explicitly requested deeper coverage
+
+Ask user before exceeding depth 3.
+
+---
+
+## Sitemap and robots.txt discovery
+
+Before crawling, always check for structured discovery sources:
+
+```bash
+obscura fetch <domain>/robots.txt --quiet --dump text
+# Parse Sitemap: directives, then fetch each sitemap
+obscura fetch <sitemap-url> --quiet --dump text
+```
+
+Benefits of sitemap-first approach:
+- Comprehensive URL list without link-following
+- Includes lastmod timestamps (can filter by date)
+- Includes priority and changefreq metadata
+- Avoids missing orphan pages not linked from navigation
+
+Only fall back to link-following if sitemap is unavailable.
+
+---
+
+## Pagination detection and following
+
+When fetching index/listing pages, actively look for pagination:
+
+```bash
+obscura fetch <url> --quiet --eval "JSON.stringify({
+  next_page: document.querySelector('a[rel=next]')?.href ||
+    document.querySelector('.pagination .next a')?.href,
+  page_links: Array.from(document.querySelectorAll('.pagination a, .pager a'))
+    .map(a => ({text: a.textContent.trim(), href: a.href}))
+    .filter(a => />\d+|next|›|→/i.test(a.text))
+})"
+```
+
+Follow pagination at the **same depth level** (not deeper). Collect all URLs from all pages before proceeding to scrape.
+
+---
+
+## Adaptive extraction strategy
+
+When extraction returns empty/unexpected results, try strategies **in order**:
+
+| # | Strategy | Flags |
+|---|----------|-------|
+| 1 | Text fallback | `--dump text` |
+| 2 | Stealth retry | add `--stealth` |
+| 3 | Selector wait | `--selector <main> --wait-until networkidle0` |
+| 4 | JS eval with fallback selectors | `--eval "document.querySelector('article')?.innerText \|\| document.querySelector('main')?.innerText \|\| document.body.innerText"` |
+| 5 | Give up on this URL | Mark as ERROR, continue with queue |
+
+Maximum **3 attempts per URL**. Do not waste turns retrying stubborn pages.
+
+---
+
+## Smart batching rules
+
+| URL count | Strategy |
+|-----------|----------|
+| 2–5 | Single `obscura scrape` call |
+| 6–30 | Single `obscura scrape` with `--concurrency 10` |
+| 31–100 | Split into batches of 25, run sequentially |
+| 100+ | Split into batches of 25, **ask user** before proceeding |
+| Rate-limited (429) | `--concurrency 2`, batches of 10 |
+
+---
+
+## Result validation
+
+After each scrape batch, validate results:
+- Count successful vs failed URLs
+- Check for empty/null extractions (might need different extraction logic)
+- Check for "access denied" / "cloudflare" in results (need `--stealth`)
+- If **>50% of batch failed**: stop, diagnose pattern, adjust strategy before continuing
+
+---
+
+## Progress reporting
+
+For tasks with 10+ steps, report progress every 5 steps:
+> "[Crawl] Depth 2/3 | Queue: 23 remaining | Extracted: 156 items | Errors: 4 URLs"
+
+---
+
+## Expanded escalation table
+
+| Situation | Response |
+|-----------|----------|
+| Login required | Tell user: use Playwright/Browser-use |
+| CAPTCHA encountered | Tell user: cannot proceed |
+| Rate limited (429) | Retry with `--concurrency 2`, wait between batches |
+| Empty body / 403 | Retry with `--stealth` |
+| JS-heavy SPA, content missing | Add `--wait-until networkidle0` or `--selector` |
+| > 50 URLs | Split into batches of 20–30, run sequentially |
+| > 50% batch failure | Stop, diagnose pattern, adjust strategy |
+| Depth > 3 | Ask user before going deeper |
+| > 500 URLs discovered | Warn user, suggest narrowing scope |
+| Extraction returns empty | Try adaptive: text → stealth → selector → eval |
+| Pagination detected | Follow next pages at same depth, collect all URLs |
