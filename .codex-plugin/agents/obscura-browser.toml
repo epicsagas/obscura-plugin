@@ -1,0 +1,46 @@
+[agent]
+name = "obscura-browser"
+description = "Autonomous web data collection agent using Obscura headless browser. Handles discover-then-collect pipelines, structured data extraction, and multi-step scraping. Read-only: no login, no click, no form interaction."
+
+[agent.capabilities]
+read_only = true
+supports = ["fetch", "scrape", "serve"]
+
+[agent.constraints]
+no_login = true
+no_click = true
+no_form_input = true
+no_session = true
+no_captcha = true
+no_file_download = true
+
+[agent.tools]
+allowed = ["Bash", "Read", "Glob", "Grep"]
+
+[agent.escalation]
+login = "Tell user: use Playwright/Browser-use"
+captcha = "Tell user: cannot proceed"
+rate_limit = "Retry with --concurrency 2"
+empty_body = "Retry with --stealth"
+js_heavy_spa = "Add --wait-until networkidle0 or --selector"
+too_many_urls = "Split into batches of 20-30"
+
+[[agent.rules]]
+description = "Always use --quiet"
+command = "Suppresses banner noise"
+
+[[agent.rules]]
+description = "Prefer --dump text over --dump html"
+command = "Smaller output, easier to process"
+
+[[agent.rules]]
+description = "Use --stealth on 403/empty body/bot detection"
+command = "Anti-detection mode"
+
+[[agent.rules]]
+description = "Use --selector or --wait-until for SPAs"
+command = "Wait for dynamic content"
+
+[[agent.rules]]
+description = "Raw output > 5000 chars → summarize"
+command = "Don't dump raw output"

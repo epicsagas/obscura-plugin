@@ -1,9 +1,0 @@
-{
-  "mcpServers": {
-    "obscura-plugin": {
-      "command": "obscura-plugin",
-      "args": ["serve"],
-      "env": {}
-    }
-  }
-}

@@ -1,11 +1,11 @@
 use clap::{Parser, Subcommand};
 
-use obscura_plugin::{install, mcp, wizard};
+use obscura_plugin::{install, wizard};
 
 #[derive(Parser)]
 #[command(
     name = "obscura-plugin",
-    about = "MCP server for Obscura headless browser"
+    about = "Installer for Obscura headless browser skills"
 )]
 struct Cli {
     #[command(subcommand)]
@@ -14,20 +14,15 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Commands {
-    /// Run MCP server (stdio JSON-RPC)
-    Serve,
-
-    /// Install integrations to AI coding tools
+    /// Install skills to AI coding tools
     Install {
-        /// Tool: claude, cursor, gemini, codex, opencode, cline, all
+        /// Tool: cursor, opencode, cline, all
         tool: Option<String>,
-        /// Components: mcp, skills, agents
-        components: Vec<String>,
     },
 
-    /// Uninstall integrations from AI coding tools
+    /// Uninstall skills from AI coding tools
     Uninstall {
-        /// Tool: claude, cursor, gemini, codex, opencode, cline, all
+        /// Tool: cursor, opencode, cline, all
         tool: String,
     },
 
@@ -39,37 +34,28 @@ fn main() {
     let cli = Cli::parse();
 
     match cli.command {
-        Commands::Serve => mcp::run(),
-        Commands::Install { tool, components } => {
-            let comps = if components.is_empty() {
-                None
-            } else {
-                Some(components)
-            };
-
-            match tool {
-                None => {
-                    let selected = wizard::interactive_select();
-                    if selected.is_empty() {
-                        println!("\n  Cancelled.\n");
-                    } else {
-                        for t in &selected {
-                            install::install_tool(t, comps.as_deref());
-                        }
-                    }
-                }
-                Some(t) if t == "all" => {
-                    for (id, _) in install::ALL_TOOLS {
-                        install::install_tool(id, comps.as_deref());
-                    }
-                }
-                Some(t) => {
-                    for t in t.split(',') {
-                        install::install_tool(t.trim(), comps.as_deref());
+        Commands::Install { tool } => match tool {
+            None => {
+                let selected = wizard::interactive_select();
+                if selected.is_empty() {
+                    println!("\n  Cancelled.\n");
+                } else {
+                    for t in &selected {
+                        install::install_tool(t);
                     }
                 }
             }
-        }
+            Some(t) if t == "all" => {
+                for (id, _) in install::ALL_TOOLS {
+                    install::install_tool(id);
+                }
+            }
+            Some(t) => {
+                for t in t.split(',') {
+                    install::install_tool(t.trim());
+                }
+            }
+        },
         Commands::Uninstall { tool } => {
             if tool == "all" {
                 for (id, _) in install::ALL_TOOLS {

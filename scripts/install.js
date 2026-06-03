@@ -108,8 +108,8 @@ function getBinaryVersion(exePath) {
 
 function getPluginVersion() {
   try {
-    const root = process.env.CLAUDE_PLUGIN_ROOT || __dirname.replace(/[\\/]hooks$/, "");
-    const manifest = JSON.parse(readFileSync(join(root, ".claude-plugin", "plugin.json"), "utf8"));
+    const root = process.env.CLAUDE_PLUGIN_ROOT || process.env.PLUGIN_ROOT || __dirname.replace(/[\\/]scripts$/, "");
+    const manifest = JSON.parse(readFileSync(join(root, "plugin.json"), "utf8"));
     return manifest.version || null;
   } catch (_) {}
   return null;
@@ -275,19 +275,11 @@ async function installObscuraFromRelease(destDir) {
   return join(destDir, exeName);
 }
 
-// ── Seed (MCP register + skills) ─────────────────────────────────────────────
-
-function seed(mcpExe) {
-  const r = spawnSync(mcpExe, ["install", "claude"], { stdio: "inherit" });
-  if (r.status !== 0) log(`Warning: 'obscura-plugin install claude' exited ${r.status}`);
-}
-
 // ── Main ─────────────────────────────────────────────────────────────────────
 
 async function main() {
   const dir = installDir();
   const pluginVersion = getPluginVersion();
-  const isPlugin = !!process.env.CLAUDE_PLUGIN_ROOT;
 
   // ── 1. Ensure obscura + obscura-worker ─────────────────────────────────
   let obscuraExe = resolveExe(OBSCURA_BINARY, dir);
@@ -308,16 +300,14 @@ async function main() {
   }
 
   // ── 2. Ensure obscura-plugin ───────────────────────────────────────────────
-  let mcpExe = resolveExe(MCP_BINARY, dir);
-  if (!mcpExe) {
+  let pluginExe = resolveExe(MCP_BINARY, dir);
+  if (!pluginExe) {
     log(`${MCP_BINARY} not found — installing...`);
     try {
-      mcpExe = await installMcpFromRelease(dir);
+      pluginExe = await installMcpFromRelease(dir);
       patchShellRc(dir);
-      if (mcpExe && getBinaryVersion(mcpExe)) {
-        log(`${MCP_BINARY} ${getBinaryVersion(mcpExe)} ready`);
-        // Plugin mode: MCP + skills auto-registered from plugin cache, skip manual seeding
-        if (!isPlugin) seed(mcpExe);
+      if (pluginExe && getBinaryVersion(pluginExe)) {
+        log(`${MCP_BINARY} ${getBinaryVersion(pluginExe)} ready`);
       }
     } catch (e) {
       log(`${MCP_BINARY} install failed: ${e.message}`);
@@ -329,23 +319,20 @@ async function main() {
 
   // ── 3. Update obscura-plugin if plugin version is newer ────────────────────
   if (pluginVersion) {
-    const binaryVersion = getBinaryVersion(mcpExe);
+    const binaryVersion = getBinaryVersion(pluginExe);
     if (binaryVersion && semverGt(pluginVersion, binaryVersion)) {
       log(`Updating ${MCP_BINARY} ${binaryVersion} → ${pluginVersion}...`);
       try {
         const updated = await installMcpFromRelease(dir);
         if (updated) {
-          mcpExe = updated;
-          log(`Updated to ${getBinaryVersion(mcpExe)}`);
+          pluginExe = updated;
+          log(`Updated to ${getBinaryVersion(pluginExe)}`);
         }
       } catch (e) {
         log(`Update failed: ${e.message} — continuing with ${binaryVersion}`);
       }
     }
   }
-
-  // ── 4. Seed MCP config + skills (standalone installs only) ──────────────
-  if (!isPlugin) seed(mcpExe);
 }
 
 main().catch((e) => {

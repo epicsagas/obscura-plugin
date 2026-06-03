@@ -1,7 +1,7 @@
 {
   "name": "obscura",
-  "version": "0.1.2",
-  "description": "Rust headless browser as MCP tools. Fetch, scrape, extract markdown — zero config, auto-installs.",
+  "version": "0.1.3",
+  "description": "Headless browser for AI agents — fetch, scrape, extract markdown.",
   "author": {
     "name": "epicsagas",
     "url": "https://github.com/epicsagas"
@@ -9,27 +9,22 @@
   "homepage": "https://github.com/epicsagas/obscura-plugin",
   "repository": "https://github.com/epicsagas/obscura-plugin",
   "license": "Apache-2.0",
-  "keywords": [
-    "headless-browser",
-    "web-scraping",
-    "mcp",
-    "ai-agent",
-    "automation"
-  ],
-  "skills": "./registry/skills/",
-  "mcpServers": "./.mcp.json",
+  "keywords": ["headless-browser", "web-scraping", "ai-agent", "automation"],
+  "skills": "./skills/",
+  "agents": "./.codex-plugin/agents/",
+  "hooks": "./.codex-plugin/hooks.json",
   "interface": {
     "displayName": "Obscura Browser",
-    "shortDescription": "Headless browser for AI agents — fetch, scrape, and extract web data.",
-    "longDescription": "Obscura is a Rust-based headless browser CLI that exposes web fetching, parallel scraping, markdown extraction, and CDP automation as MCP tools. Use it for read-only web data collection pipelines.",
+    "shortDescription": "Headless browser for AI agents",
+    "longDescription": "Autonomous web data collection using Obscura headless browser. Fetch, scrape, extract markdown, structured data via JS eval, and discover-then-collect pipelines. Read-only: no login, no click, no form interaction.",
     "developerName": "epicsagas",
     "category": "Productivity",
     "capabilities": ["Read"],
     "websiteURL": "https://github.com/epicsagas/obscura-plugin",
     "defaultPrompt": [
-      "Use Obscura to fetch and summarize this web page.",
-      "Use Obscura to scrape product data from these URLs.",
-      "Use Obscura to extract all links from this site."
+      "Fetch a web page and extract its content",
+      "Scrape multiple URLs in parallel",
+      "Run a discover-then-collect pipeline"
     ]
   }
 }

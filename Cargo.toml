@@ -6,8 +6,8 @@ rust-version = "1.80"
 license = "Apache-2.0"
 repository = "https://github.com/epicsagas/obscura-plugin"
 homepage = "https://github.com/epicsagas/obscura-plugin"
-description = "MCP server for Obscura headless browser — CLI wrapper for AI agent integration"
-keywords = ["mcp", "web-scraping", "headless-browser", "ai-agent"]
+description = "Installer for Obscura headless browser skills"
+keywords = ["web-scraping", "headless-browser", "ai-agent"]
 categories = ["command-line-utilities", "development-tools"]
 authors = ["epicsagas"]
 readme = "README.md"
@@ -18,6 +18,7 @@ exclude = [
     ".agents/",
     "hooks/",
     "registry/",
+    "scripts/",
     "tests/",
     "stitch-screens/",
 ]
@@ -40,11 +41,9 @@ pkg-fmt = "zip"
 bin-dir = "{ bin }.exe"
 
 [dependencies]
-tokio = { version = "1", features = ["full"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 clap = { version = "4", features = ["derive"] }
-regex = "1"
 crossterm = "0.28"
 
 [profile.release]
