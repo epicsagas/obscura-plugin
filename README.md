@@ -15,10 +15,7 @@
 Skill-driven plugin for [Obscura](https://github.com/h4ckf0r0day/obscura) headless browser — gives AI coding agents direct access to web scraping and browser automation via slash commands.
 
 > **Two approaches in Obscura:**
-> - `obscura mcp` (built-in) — in-process browser control with interactive `browser_*` tools (click, fill, navigate)
 > - `obscura-plugin` (this plugin) — skill-driven with read-only commands (`obscura_fetch`, `obscura_scrape`, etc.), designed for autonomous agent pipelines
->
-> Use the built-in `obscura mcp` when you need to click, fill forms, or maintain browser state. Use this plugin for read-only scraping and batch data collection.
 
 ## Install
 
@@ -41,13 +38,11 @@ codex plugin marketplace add epicsagas/plugins
 
 Skills and agents are available immediately — no further steps needed.
 
-### Antigravity (agy)
+### Antigravity
 
 ```bash
-agy plugin install epicsagas/obscura-plugin
+agy plugin install https://github.com/epicsagas/obscura-plugin
 ```
-
-Uses the root `plugin.json` + `hooks.json` for auto-discovery.
 
 ---
 

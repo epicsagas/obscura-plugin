@@ -1,7 +1,8 @@
 {
-  "hooks": {
+  "obscura-hooks": {
     "SessionStart": [
       {
+        "matcher": "run_command",
         "hooks": [
           {
             "type": "command",
