@@ -1,5 +1,5 @@
 {
-  "name": "obscura",
+  "name": "obscura-plugin",
   "version": "0.2.0",
   "description": "Headless browser for AI agents — fetch, scrape, extract markdown.",
   "author": {
