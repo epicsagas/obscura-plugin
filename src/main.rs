@@ -1,11 +1,11 @@
 use clap::{Parser, Subcommand};
 
-use obscura_plugin::{install, wizard};
+use obscura_plugin::{install, mcp, wizard};
 
 #[derive(Parser)]
 #[command(
     name = "obscura-plugin",
-    about = "Installer for Obscura headless browser skills"
+    about = "Installer and MCP server for Obscura headless browser"
 )]
 struct Cli {
     #[command(subcommand)]
@@ -28,6 +28,9 @@ enum Commands {
 
     /// List supported tools
     List,
+
+    /// Run as MCP server (stdio transport)
+    Serve,
 }
 
 fn main() {
@@ -68,5 +71,6 @@ fn main() {
             }
         }
         Commands::List => install::list_tools(),
+        Commands::Serve => mcp::run_stdio_server(),
     }
 }
