@@ -1,0 +1,21 @@
+{
+  "name": "obscura-plugin",
+  "interface": {
+    "displayName": "obscura-plugin plugin"
+  },
+  "plugins": [
+    {
+      "name": "obscura-plugin",
+      "source": {
+        "source": "local",
+        "path": "./"
+      },
+      "pluginManifest": "./.codex-plugin/plugin.json",
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Web Automation"
+    }
+  ]
+}

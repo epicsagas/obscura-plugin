@@ -21,11 +21,11 @@ Skill-driven plugin for [Obscura](https://github.com/h4ckf0r0day/obscura) headle
 
 ### Claude Code (zero-touch)
 
-`obscura-plugin` ships a `.claude-plugin/` manifest. Register the marketplace source once, then install:
+`obscura-plugin` ships a `.claude-plugin/` manifest. Register the standalone marketplace once, then install:
 
 ```bash
-claude plugin marketplace add epicsagas/plugins
-claude plugin install obscura-plugin
+claude plugin marketplace add epicsagas/obscura-plugin
+claude plugin install obscura-plugin@obscura-plugin
 ```
 
 The `SessionStart` hook downloads `obscura` and `obscura-worker` automatically on first load. No manual steps needed.
@@ -33,8 +33,8 @@ The `SessionStart` hook downloads `obscura` and `obscura-worker` automatically o
 ### Codex CLI
 
 ```bash
-codex plugin marketplace add epicsagas/plugins
-codex plugin install obscura-plugin
+codex plugin marketplace add epicsagas/obscura-plugin
+codex plugin install obscura-plugin@obscura-plugin
 ```
 
 Skills and agents are available immediately — no further steps needed.

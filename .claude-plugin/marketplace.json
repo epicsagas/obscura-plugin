@@ -6,11 +6,11 @@
     "url": "https://github.com/epicsagas"
   },
   "metadata": {
-    "description": "Headless browser for AI agents — fetch, scrape, extract markdown."
+    "description": "Standalone marketplace for the obscura-plugin. Install directly from this repository without the epicsagas hub."
   },
   "plugins": [
     {
-      "name": "obscura",
+      "name": "obscura-plugin",
       "source": "./",
       "description": "Headless browser — fetch, scrape, markdown extraction."
     }
