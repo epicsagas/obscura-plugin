@@ -10,8 +10,9 @@
       "description": "Headless browser for AI agents — fetch, scrape, extract markdown.",
       "category": "development",
       "source": {
-        "type": "local",
-        "path": "."
+        "source": "url",
+        "url": "https://github.com/epicsagas/obscura-plugin.git",
+        "sha": "a2643ee107a0f3add6dade108570923686ac5a82"
       },
       "homepage": "https://github.com/epicsagas/obscura-plugin",
       "keywords": [
