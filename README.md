@@ -19,6 +19,14 @@ Skill-driven plugin for [Obscura](https://github.com/h4ckf0r0day/obscura) headle
 
 ## Install
 
+### Grok Build (xAI)
+
+```bash
+grok plugin install epicsagas/obscura-plugin --trust
+```
+
+Grok reads skills from `skills/` and agents from `agents/` at the plugin root. No extra configuration needed.
+
 ### Claude Code (zero-touch)
 
 `obscura-plugin` ships a `.claude-plugin/` manifest. Register the standalone marketplace once, then install:
