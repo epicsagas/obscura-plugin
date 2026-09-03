@@ -1,0 +1,17 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "R=\"${GROK_PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT:-.}}\"; node \"$R/scripts/install.js\"",
+            "timeout": 120
+          }
+        ],
+        "description": "Install obscura binary if missing"
+      }
+    ]
+  }
+}

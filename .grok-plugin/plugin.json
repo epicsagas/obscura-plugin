@@ -1,6 +1,6 @@
 {
   "name": "obscura",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Headless browser for AI agents — fetch, scrape, extract markdown.",
   "author": {
     "name": "epicsagas",
@@ -16,5 +16,6 @@
     "ai-agent",
     "automation"
   ],
-  "agents": "./agents/"
+  "agents": "./agents/",
+  "hooks": "./hooks/hooks.json"
 }
