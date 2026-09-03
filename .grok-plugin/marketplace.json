@@ -12,7 +12,7 @@
       "source": {
         "source": "url",
         "url": "https://github.com/epicsagas/obscura-plugin.git",
-        "sha": "a2643ee107a0f3add6dade108570923686ac5a82"
+        "sha": "c631d9517b9fcfa026757008130b71aa5278c61a"
       },
       "homepage": "https://github.com/epicsagas/obscura-plugin",
       "keywords": [
@@ -20,7 +20,8 @@
         "web-scraping",
         "ai-agent",
         "automation"
-      ]
+      ],
+      "version": "0.2.1"
     }
   ]
 }
