@@ -1,0 +1,25 @@
+{
+  "name": "obscura",
+  "description": "Standalone marketplace for the obscura plugin. Install from this repository.",
+  "owner": {
+    "name": "epicsagas"
+  },
+  "plugins": [
+    {
+      "name": "obscura",
+      "description": "Headless browser for AI agents — fetch, scrape, extract markdown.",
+      "category": "development",
+      "source": {
+        "type": "local",
+        "path": "."
+      },
+      "homepage": "https://github.com/epicsagas/obscura-plugin",
+      "keywords": [
+        "headless-browser",
+        "web-scraping",
+        "ai-agent",
+        "automation"
+      ]
+    }
+  ]
+}

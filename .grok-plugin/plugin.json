@@ -1,0 +1,20 @@
+{
+  "name": "obscura",
+  "version": "0.2.0",
+  "description": "Headless browser for AI agents — fetch, scrape, extract markdown.",
+  "author": {
+    "name": "epicsagas",
+    "url": "https://github.com/epicsagas"
+  },
+  "homepage": "https://github.com/epicsagas/obscura-plugin",
+  "repository": "https://github.com/epicsagas/obscura-plugin",
+  "license": "Apache-2.0",
+  "skills": "./skills/",
+  "keywords": [
+    "headless-browser",
+    "web-scraping",
+    "ai-agent",
+    "automation"
+  ],
+  "agents": "./agents/"
+}
