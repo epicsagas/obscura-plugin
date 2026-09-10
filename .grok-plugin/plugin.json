@@ -1,6 +1,6 @@
 {
   "name": "obscura",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Headless browser for AI agents — fetch, scrape, extract markdown.",
   "author": {
     "name": "epicsagas",
@@ -17,5 +17,5 @@
     "automation"
   ],
   "agents": "./agents/",
-  "hooks": "./hooks/hooks.json"
+  "hooks": "./.grok-plugin/hooks.json"
 }

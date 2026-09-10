@@ -1,6 +1,6 @@
 {
   "name": "obscura-plugin",
-  "version": "0.2.0",
+  "version": "0.2.2",
   "description": "Headless browser for AI agents — fetch, scrape, extract markdown.",
   "author": {
     "name": "epicsagas",
@@ -9,7 +9,12 @@
   "homepage": "https://github.com/epicsagas/obscura-plugin",
   "repository": "https://github.com/epicsagas/obscura-plugin",
   "license": "Apache-2.0",
-  "keywords": ["headless-browser", "web-scraping", "ai-agent", "automation"],
+  "keywords": [
+    "headless-browser",
+    "web-scraping",
+    "ai-agent",
+    "automation"
+  ],
   "skills": "./skills/",
   "agents": "./.codex-plugin/agents/",
   "hooks": "./.codex-plugin/hooks.json",
@@ -19,7 +24,9 @@
     "longDescription": "Autonomous web data collection using Obscura headless browser. Fetch, scrape, extract markdown, structured data via JS eval, and discover-then-collect pipelines. Read-only: no login, no click, no form interaction.",
     "developerName": "epicsagas",
     "category": "Productivity",
-    "capabilities": ["Read"],
+    "capabilities": [
+      "Read"
+    ],
     "websiteURL": "https://github.com/epicsagas/obscura-plugin",
     "defaultPrompt": [
       "Fetch a web page and extract its content",
