@@ -1,6 +1,6 @@
 {
   "obscura-hooks": {
-    "SessionStart": [
+    "PreInvocation": [
       {
         "matcher": "run_command",
         "hooks": [

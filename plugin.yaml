@@ -1,8 +1,8 @@
 # Hermes plugin manifest (YAML).
 # Spec: https://hermes-agent.nousresearch.com/docs/developer-guide/plugins
 # Loaded by `hermes plugins` from ~/.hermes/plugins/<name>/plugin.yaml
-name: obscura
-version: "0.2.2"
+name: obscura-plugin
+version: "0.2.3"
 description: "Headless browser as tools — fetch web pages, scrape URLs, extract content via obscura CLI."
 author:
   name: epicsagas
