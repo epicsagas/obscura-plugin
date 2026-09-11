@@ -12,7 +12,7 @@
       "source": {
         "source": "url",
         "url": "https://github.com/epicsagas/obscura-plugin.git",
-        "sha": "c631d9517b9fcfa026757008130b71aa5278c61a"
+        "sha": "2d093c8800b7ebd6786dd766abbccc24bc3bc647"
       },
       "homepage": "https://github.com/epicsagas/obscura-plugin",
       "keywords": [
