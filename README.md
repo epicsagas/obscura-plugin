@@ -22,10 +22,11 @@ Skill-driven plugin for [Obscura](https://github.com/h4ckf0r0day/obscura) headle
 ### Grok Build (xAI)
 
 ```bash
-grok plugin install epicsagas/obscura-plugin --trust
+grok plugin marketplace add epicsagas/obscura-plugin
+grok plugin install obscura@obscura-plugin --trust
 ```
 
-Grok reads skills from `skills/` and agents from `agents/` at the plugin root. No extra configuration needed.
+Direct install without registering a marketplace is also supported: `grok plugin install epicsagas/obscura-plugin --trust`. Grok reads skills from `skills/` and agents from `agents/` at the plugin root.
 
 ### Claude Code (zero-touch)
 
