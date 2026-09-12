@@ -12,7 +12,7 @@
       "source": {
         "source": "url",
         "url": "https://github.com/epicsagas/obscura-plugin.git",
-        "sha": "2d093c8800b7ebd6786dd766abbccc24bc3bc647"
+        "sha": "bbd922892ed26100d9e2a05ce2bb361610e0f7ad"
       },
       "homepage": "https://github.com/epicsagas/obscura-plugin",
       "keywords": [
@@ -21,7 +21,7 @@
         "ai-agent",
         "automation"
       ],
-      "version": "0.2.1"
+      "version": "0.2.3"
     }
   ]
 }
